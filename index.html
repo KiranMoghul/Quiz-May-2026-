@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>May 2026 Exam Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1a1a1a;
+    --border: #272727;
+    --text: #f0f0f0;
+    --muted: #666;
+    --muted2: #333;
+    --green:  #00e5a0;
+    --orange: #ff6b35;
+    --gold:   #f5c542;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 44px 44px;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* HERO */
+  .hero { padding: 60px 0 44px; animation: fadeUp 0.5s ease both; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--green); border: 1px solid var(--green);
+    padding: 4px 14px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 800; line-height: 1.05; letter-spacing: -2px;
+  }
+  .hero h1 em { color: var(--green); font-style: normal; }
+  .hero p { margin-top: 14px; color: var(--muted); font-size: 0.82rem; line-height: 1.8; max-width: 520px; }
+
+  /* STATS */
+  .stats {
+    display: flex; border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    margin: 0 0 52px; animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .stat { flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat .val { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--green); }
+  .stat .lbl { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; margin-top: 3px; }
+
+  /* SUBJECT BLOCK */
+  .subject { margin-bottom: 48px; animation: fadeUp 0.5s ease both; }
+  .subject-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .subject-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; border: 1px solid var(--border);
+    background: var(--surface); flex-shrink: 0;
+  }
+  .subject-info { flex: 1; }
+  .subject-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+  .subject-sub { font-size: 0.68rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+  .subject-count { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+  .divider { height: 1px; background: var(--border); margin-bottom: 18px; }
+
+  /* QUIZ CARDS */
+  .quiz-list { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 13px; padding: 18px 20px;
+    text-decoration: none; color: var(--text);
+    display: flex; align-items: center; gap: 16px;
+    transition: border-color 0.2s, transform 0.15s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .quiz-card:not(.coming-soon):hover {
+    border-color: var(--c);
+    transform: translateX(5px);
+    background: #1f1f1f;
+  }
+  .quiz-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--c); border-radius: 13px 0 0 13px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .quiz-card:not(.coming-soon):hover::before { opacity: 1; }
+  .quiz-num { font-size: 0.65rem; letter-spacing: 2px; color: var(--c); text-transform: uppercase; min-width: 28px; text-align: center; flex-shrink: 0; }
+  .quiz-info { flex: 1; }
+  .quiz-title { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700; line-height: 1.4; }
+  .quiz-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .badge { font-size: 0.62rem; padding: 2px 9px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+  .badge.live { border-color: var(--c); color: var(--c); background: transparent; }
+  .quiz-arrow { color: var(--c); font-size: 1rem; transition: transform 0.2s; flex-shrink: 0; }
+  .quiz-card:not(.coming-soon):hover .quiz-arrow { transform: translateX(4px); }
+  .quiz-card.coming-soon { opacity: 0.35; border-style: dashed; pointer-events: none; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 24px 0 0; text-align: center; font-size: 0.7rem; color: var(--muted2); line-height: 2; }
+  .footer span { color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .subject:nth-child(1) { animation-delay: 0.15s; }
+  .subject:nth-child(2) { animation-delay: 0.25s; }
+  .subject:nth-child(3) { animation-delay: 0.35s; }
+
+  @media (max-width: 500px) {
+    .stats { flex-wrap: wrap; }
+    .stat { min-width: 50%; border-bottom: 1px solid var(--border); }
+    .subject-count { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-tag">📚 Practice Hub</div>
+    <h1>May 2026<br><em>Exam Practice</em></h1>
+    <p>Three subjects. All your MCQs in one place. Pick a topic, test yourself, see your score — and keep going until exam day.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="val">3</div><div class="lbl">Subjects</div></div>
+    <div class="stat"><div class="val">7</div><div class="lbl">Quiz Sets</div></div>
+    <div class="stat"><div class="val">70+</div><div class="lbl">Questions</div></div>
+    <div class="stat"><div class="val">∞</div><div class="lbl">Attempts</div></div>
+  </div>
+
+  <!-- ── COMPUTER ── -->
+  <div class="subject">
+    <div class="subject-header">
+      <div class="subject-icon">💻</div>
+      <div class="subject-info">
+        <div class="subject-name" style="color:var(--green)">Computer</div>
+        <div class="subject-sub">Introduction to Computing & Office Applications</div>
+      </div>
+      <div class="subject-count">2 quizzes</div>
+    </div>
+    <div class="divider"></div>
+    <div class="quiz-list">
+
+      <a class="quiz-card" href="01. Introduction to Computer - Quiz Practice.html" style="--c: var(--green)">
+        <div class="quiz-num">01</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Introduction to Computer</div>
+          <div class="quiz-badges">
+            <span class="badge live">● Live</span>
+            <span class="badge">70 Questions</span>
+            <span class="badge">Fundamentals</span>
+          </div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </a>
+
+      <div class="quiz-card coming-soon" style="--c: var(--green)">
+        <div class="quiz-num">02</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Introduction to Word 2007</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── ENGLISH ── -->
+  <div class="subject">
+    <div class="subject-header">
+      <div class="subject-icon">🗣️</div>
+      <div class="subject-info">
+        <div class="subject-name" style="color:var(--orange)">English</div>
+        <div class="subject-sub">Oxford Word Skills · Spoken English · GDP</div>
+      </div>
+      <div class="subject-count">4 quizzes</div>
+    </div>
+    <div class="divider"></div>
+    <div class="quiz-list">
+
+      <div class="quiz-card coming-soon" style="--c: var(--orange)">
+        <div class="quiz-num">01</div>
+        <div class="quiz-info">
+          <div class="quiz-title">How to Communicate Effectively & Important Factors for Effective Communication</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+      <div class="quiz-card coming-soon" style="--c: var(--orange)">
+        <div class="quiz-num">02</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Verbal & Non-Verbal Communication — Difference, Types and Importance</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+      <div class="quiz-card coming-soon" style="--c: var(--orange)">
+        <div class="quiz-num">03</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Tell Time · Countries & Nationalities · Describe Physical Actions</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+      <div class="quiz-card coming-soon" style="--c: var(--orange)">
+        <div class="quiz-num">04</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Food Safety & Hygiene · Personal Hygiene Guidelines for Food Workers</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CULINARY ARTS ── -->
+  <div class="subject">
+    <div class="subject-header">
+      <div class="subject-icon">🍳</div>
+      <div class="subject-info">
+        <div class="subject-name" style="color:var(--gold)">Culinary Arts</div>
+        <div class="subject-sub">Diploma of Culinary Arts</div>
+      </div>
+      <div class="subject-count">TBC</div>
+    </div>
+    <div class="divider"></div>
+    <div class="quiz-list">
+
+      <div class="quiz-card coming-soon" style="--c: var(--gold)">
+        <div class="quiz-num">—</div>
+        <div class="quiz-info">
+          <div class="quiz-title">Quizzes will be added soon</div>
+          <div class="quiz-badges"><span class="badge">Coming Soon</span></div>
+        </div>
+        <div class="quiz-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>May 2026 Exam Practice</span> · KiranMoghul · Open in any browser · No login needed
+  </div>
+
+</div>
+</body>
+</html>
