@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Word 2007 — Quiz Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0d0d;--surface:#1a1a1a;--card:#222;--border:#333;--accent:#00e5a0;--accent2:#ff6b35;--wrong:#ff4444;--text:#f0f0f0;--muted:#888;--correct-bg:rgba(0,229,160,0.1);--wrong-bg:rgba(255,68,68,0.1);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;padding:20px;}
+  .container{max-width:780px;margin:0 auto;}
+  .name-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;animation:fadeSlide 0.4s ease;}
+  .name-screen h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-1px;margin-bottom:10px;}
+  .name-screen h2 span{color:var(--accent);}
+  .name-screen p{color:var(--muted);font-size:0.82rem;margin-bottom:36px;line-height:1.8;}
+  .name-input-wrap{width:100%;max-width:380px;}
+  .name-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;font-family:'DM Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color 0.2s;text-align:center;margin-bottom:14px;}
+  .name-input:focus{border-color:var(--accent);}
+  .name-input::placeholder{color:var(--muted);}
+  .btn-start{width:100%;padding:15px;background:var(--accent);color:#000;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:transform 0.15s,opacity 0.2s;letter-spacing:0.5px;}
+  .btn-start:hover{transform:translateY(-2px);}
+  .btn-start:disabled{opacity:0.4;cursor:default;transform:none;}
+  .ghost-notice{margin-top:14px;font-size:0.72rem;color:var(--accent2);display:none;}
+  .ghost-notice.show{display:block;}
+  .bank-info{margin-top:14px;font-size:0.7rem;color:var(--muted);}
+  .bank-info span{color:var(--accent);}
+  .back-link{margin-top:30px;font-size:0.75rem;color:var(--muted);text-decoration:none;}
+  .back-link:hover{color:var(--text);}
+  .header{text-align:center;padding:40px 0 30px;}
+  .header h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1.1;}
+  .header h1 span{color:var(--accent);}
+  .header p{color:var(--muted);margin-top:10px;font-size:0.85rem;}
+  .progress-bar-wrap{background:var(--border);border-radius:999px;height:6px;margin:20px 0 10px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:var(--accent);border-radius:999px;transition:width 0.4s ease;}
+  .progress-label{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:24px;}
+  .question-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px;animation:fadeSlide 0.3s ease;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .q-number{font-size:0.7rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .q-text{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;line-height:1.5;margin-bottom:20px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;cursor:pointer;font-family:'DM Mono',monospace;font-size:0.88rem;color:var(--text);text-align:left;transition:border-color 0.2s,background 0.2s,transform 0.1s;display:flex;align-items:center;gap:12px;}
+  .option:hover:not(:disabled){border-color:var(--accent);transform:translateX(4px);}
+  .option .opt-letter{font-weight:500;color:var(--muted);min-width:18px;}
+  .option.correct{background:var(--correct-bg);border-color:var(--accent);color:var(--accent);}
+  .option.correct .opt-letter{color:var(--accent);}
+  .option.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+  .option.wrong .opt-letter{color:var(--wrong);}
+  .option:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:0.82rem;line-height:1.5;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:var(--correct-bg);border:1px solid var(--accent);color:var(--accent);}
+  .feedback.wrong-fb{background:var(--wrong-bg);border:1px solid var(--wrong);color:#ff8888;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin:20px 0 40px;gap:12px;}
+  .btn{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:transform 0.15s,opacity 0.15s;letter-spacing:0.5px;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:0.3;cursor:default;transform:none;}
+  .btn-prev{background:var(--surface);color:var(--text);border:1.5px solid var(--border);}
+  .btn-next{background:var(--accent);color:#000;}
+  .btn-submit{background:var(--accent2);color:#fff;}
+  .score-chip{font-size:0.78rem;color:var(--muted);text-align:center;}
+  .score-chip span{color:var(--accent);font-weight:bold;}
+  .results-screen{display:none;text-align:center;padding:60px 20px;animation:fadeSlide 0.4s ease;}
+  .results-screen.show{display:block;}
+  .result-score-ring{width:160px;height:160px;border-radius:50%;border:6px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 30px;}
+  .result-score-ring .big{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:var(--accent);}
+  .result-score-ring .small{font-size:0.75rem;color:var(--muted);}
+  .results-screen h2{font-family:'Syne',sans-serif;font-size:1.8rem;margin-bottom:10px;}
+  .result-breakdown{display:flex;justify-content:center;gap:30px;margin:20px 0 10px;flex-wrap:wrap;}
+  .rb-item{text-align:center;}
+  .rb-item .val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;}
+  .rb-item .lbl{font-size:0.72rem;color:var(--muted);}
+  .grade-msg{color:var(--muted);font-size:0.9rem;margin-bottom:10px;}
+  .saved-msg{font-size:0.75rem;color:var(--accent);margin-bottom:24px;min-height:20px;}
+  .results-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .review-section{margin-top:40px;text-align:left;}
+  .review-section h3{font-family:'Syne',sans-serif;font-size:1.1rem;margin-bottom:16px;text-align:center;color:var(--muted);letter-spacing:1px;}
+  .review-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;font-size:0.82rem;}
+  .review-item.r-correct{border-left:3px solid var(--accent);}
+  .review-item.r-wrong{border-left:3px solid var(--wrong);}
+  .review-item .r-q{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;font-size:0.88rem;}
+  .review-item .r-your{color:var(--wrong);}
+  .review-item .r-ans{color:var(--accent);}
+  .review-item .r-skip{color:var(--muted);font-style:italic;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="name-screen" id="nameScreen">
+    <h2>Introduction to<br><span>Word 2007</span></h2>
+    <p>Microsoft Word · 70 Questions per session<br>Enter your name to start. Your score will appear on the leaderboard.</p>
+    <div class="name-input-wrap">
+      <input type="text" class="name-input" id="nameInput" placeholder="Your name..." maxlength="30"/>
+      <button class="btn-start" id="startBtn" onclick="startQuiz()" disabled>Start Quiz →</button>
+      <div class="ghost-notice" id="ghostNotice">👻 Ghost Mode — score won't be saved</div>
+    </div>
+    <div class="bank-info">🎲 <span>70 questions</span> randomly picked from a bank of <span>100</span> — different every time</div>
+    <a href="index.html" class="back-link">← Back to all quizzes</a>
+  </div>
+
+  <div id="quizScreen" style="display:none">
+    <div class="header">
+      <h1>Introduction to<br><span>Word 2007</span></h1>
+      <p id="playerLabel" style="color:var(--accent);font-size:0.8rem;"></p>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label"><span id="progressText">Question 1 of 70</span><span id="liveScore">Score: 0</span></div>
+    <div class="question-card" id="questionCard">
+      <div class="q-number" id="qNumber">QUESTION 01</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-prev" id="prevBtn" onclick="navigate(-1)" disabled>← Prev</button>
+      <div class="score-chip">Answered: <span id="answeredCount">0</span>/70</div>
+      <button class="btn btn-next" id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+    <div style="text-align:center;margin-bottom:40px;">
+      <button class="btn btn-submit" onclick="submitQuiz()">Submit & See Results</button>
+    </div>
+  </div>
+
+  <div class="results-screen" id="resultsScreen">
+    <div class="result-score-ring"><div class="big" id="rScore">0</div><div class="small">out of 70</div></div>
+    <h2 id="rGrade"></h2>
+    <div class="grade-msg" id="rMsg"></div>
+    <div class="saved-msg" id="savedMsg"></div>
+    <div class="result-breakdown">
+      <div class="rb-item"><div class="val" id="rCorrect" style="color:var(--accent)">0</div><div class="lbl">Correct</div></div>
+      <div class="rb-item"><div class="val" id="rWrong" style="color:var(--wrong)">0</div><div class="lbl">Wrong</div></div>
+      <div class="rb-item"><div class="val" id="rSkipped" style="color:var(--muted)">0</div><div class="lbl">Skipped</div></div>
+      <div class="rb-item"><div class="val" id="rPercent" style="color:var(--accent2)">0%</div><div class="lbl">Percentage</div></div>
+    </div>
+    <div class="results-btns">
+      <button class="btn btn-next" onclick="restartQuiz()">↺ Try Again</button>
+      <a href="index.html" class="btn btn-prev" style="text-decoration:none;display:inline-flex;align-items:center;">🏠 Home</a>
+    </div>
+    <div class="review-section"><h3>— REVIEW ALL ANSWERS —</h3><div id="reviewContainer"></div></div>
+  </div>
+</div>
+
+<script>
+const QUIZ_ID='computer-02',STORAGE_KEY='leaderboard-scores',TOTAL_Q=70;
+let isGhost=sessionStorage.getItem('ghostMode')==='1';
+if(isGhost)document.getElementById('ghostNotice').classList.add('show');
+const nameInput=document.getElementById('nameInput'),startBtn=document.getElementById('startBtn');
+nameInput.addEventListener('input',()=>{startBtn.disabled=nameInput.value.trim().length<2;});
+nameInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&nameInput.value.trim().length>=2)startQuiz();});
+let playerName='',current=0,sessionQ=[],userAnswers=[];
+
+const BANK=[
+  // DEFINITION & BASICS
+  {q:"Microsoft Word is best described as:",opts:["A spreadsheet application","A word processing application software","A database management system","A graphic design tool"],ans:1},
+  {q:"Which of the following can you do in Microsoft Word?",opts:["Design 3D models","Write, edit, format text and check spelling","Build websites only","Create only mathematical charts"],ans:1},
+  {q:"The small blinking vertical line on the Word screen is called:",opts:["The pointer","The insertion marker","The cursor","The caret icon"],ans:2},
+  {q:"Word Wrapping means:",opts:["Pressing Enter at the end of every line","Text automatically moves to the next line without pressing Enter","Wrapping text around an image","Adding a border around a paragraph"],ans:1},
+  {q:"In MS Word you should press Enter only:",opts:["At the end of every line","At the end of a paragraph or to begin a new paragraph","Every 10 words","Never"],ans:1},
+  {q:"Microsoft Word enables users to:",opts:["Only type text","Type, edit, and format text","Only check spelling","Only print documents"],ans:1},
+  {q:"MS Word is classified as:",opts:["System software","Utility software","Application software","Firmware"],ans:2},
+  {q:"The default file extension for MS Word 2007 is:",opts:[".doc",".txt",".docx",".wrd"],ans:2},
+  {q:"MS Word is used for:",opts:["Spreadsheet calculations","Creating presentations","Documentation purposes","Database management"],ans:2},
+  {q:"To open Microsoft Word from the Start menu, you click:",opts:["Start → Programs → Microsoft Word","Start → Settings → Word","Start → Run → Word","Start → Control Panel → Word"],ans:0},
+  // WORD WINDOW
+  {q:"Which bar displays the name of the program in MS Word?",opts:["Status Bar","Menu Bar","Title Bar","Formatting Toolbar"],ans:2},
+  {q:"The Title Bar has how many buttons on its right-hand side?",opts:["Two","Four","Five","Three"],ans:3},
+  {q:"Clicking the Minimize button:",opts:["Closes the program","Makes window disappear to the taskbar","Makes window fullscreen","Saves the document"],ans:1},
+  {q:"The Restore Down button is identified by:",opts:["A cross sign","A single square","Two squares","A minus sign"],ans:2},
+  {q:"The Close button is identified by:",opts:["A minus sign","Two squares","A cross (X) sign","A single square"],ans:2},
+  {q:"The Menu Bar in MS Word 2003 contains:",opts:["Home, Insert, View, Review","File, Edit, View, Format, Tools, Table, Window, Help","File, Format, Tools, Draw, Help","Start, Programs, Format, Help"],ans:1},
+  {q:"Clicking a Menu Bar button displays:",opts:["A new document","A drop-down menu with tools and commands","The print dialog","The font dialog box"],ans:1},
+  {q:"The Standard Toolbar contains:",opts:["Margin settings","Icon buttons of frequently used tools","Only font formatting options","Page setup options"],ans:1},
+  {q:"The Formatting Toolbar contains:",opts:["Drawing tools only","Main layout options controlling how text appears","Page numbering options","Table creation tools"],ans:1},
+  {q:"The Ruler in MS Word displays:",opts:["The time and date","The word count","The margins of the text","The current page number"],ans:2},
+  {q:"The Status Bar displays:",opts:["Available fonts","Current page, line number, column and document status","Document margins","Open programs"],ans:1},
+  {q:"The Vertical Scroll Bar is used to:",opts:["Move the document left and right","Change font size","Move vertically through a long document","Insert page numbers"],ans:2},
+  {q:"The Horizontal Scroll Bar is used to:",opts:["Move through pages up and down","View a wide document by scrolling left or right","Change text alignment","Insert a table"],ans:1},
+  {q:"The Drawing Toolbar contains tools for:",opts:["Checking spelling","Working with pictures and graphics","Setting page margins","Managing files"],ans:1},
+  {q:"How many features are listed in the Microsoft Word window area?",opts:["10","17","12","15"],ans:1},
+  // FONTS & FORMATTING
+  {q:"Characters used in a text are called:",opts:["Styles","Fonts","Formats","Scripts"],ans:1},
+  {q:"Which is an example of a font?",opts:["Bold","Italic","Times New Roman","Justify"],ans:2},
+  {q:"Font size is measured in:",opts:["Pixels","Centimetres","Points","Inches"],ans:2},
+  {q:"Bold font style displays text as:",opts:["Sloping forwards","Dark and thick","Underlined","Smaller than normal"],ans:1},
+  {q:"Italic font style displays text as:",opts:["Dark and thick","Underlined","Sloping forwards","Larger than normal"],ans:2},
+  {q:"Bold Italic displays text as:",opts:["Only slanting","Only dark and thick","Dark-thick and slanting form","Underlined and bold"],ans:2},
+  {q:"To apply Bold using a shortcut key:",opts:["Ctrl+I","Ctrl+U","Ctrl+B","Ctrl+D"],ans:2},
+  {q:"To apply Italic using a shortcut key:",opts:["Ctrl+B","Ctrl+I","Ctrl+U","Ctrl+S"],ans:1},
+  {q:"To Underline selected text:",opts:["Ctrl+B","Ctrl+I","Ctrl+U","Ctrl+D"],ans:2},
+  {q:"The shortcut to open the Font dialog box is:",opts:["Ctrl+F","Ctrl+D","Ctrl+T","Ctrl+G"],ans:1},
+  {q:"Superscript places text:",opts:["Below the normal line","Above the normal line","In the centre","In bold"],ans:1},
+  {q:"Subscript places text:",opts:["Above the normal line","Below the normal line","In italic","In a text box"],ans:1},
+  {q:"To make text Superscript the shortcut is:",opts:["Ctrl+=","Ctrl+Shift+=","Ctrl+Shift+S","Ctrl+Alt+S"],ans:1},
+  {q:"To apply a colour to text, you use the icon symbol:",opts:["B on toolbar","I on toolbar","A on formatting toolbar","U on toolbar"],ans:2},
+  {q:"The shortcut to increase font size is:",opts:["Ctrl+[","Ctrl+]","Ctrl+Shift+>","Ctrl+Shift+P"],ans:1},
+  {q:"The shortcut to decrease font size is:",opts:["Ctrl+[","Ctrl+]","Ctrl+Shift+<","Ctrl+Shift+P"],ans:0},
+  // CHANGE CASE
+  {q:"Which case makes ALL letters CAPITAL?",opts:["Sentence case","Toggle case","Title case","Upper case"],ans:3},
+  {q:"Title Case means:",opts:["All letters are small","Every first letter of every word is capital","Only first letter of sentence is capital","All letters alternate"],ans:1},
+  {q:"Toggle Case means:",opts:["All caps","Every first letter of a word is small, rest capital","Alternates every single character","Only vowels capitalised"],ans:1},
+  {q:"Sentence case means:",opts:["All capitals","All small letters","Every first letter after a full stop is capital","Random capitalisation"],ans:2},
+  {q:"Lower case means:",opts:["All capital letters","All letters are small","First letter of sentence is capital","Random capitalisation"],ans:1},
+  {q:"The shortcut key to Change Case is:",opts:["Ctrl+F3","Shift+F3","Alt+F3","Ctrl+Shift+C"],ans:1},
+  // ALIGNMENT & SPACING
+  {q:"There are how many types of text alignment in MS Word?",opts:["Two","Three","Five","Four"],ans:3},
+  {q:"The shortcut to Centre Align text is:",opts:["Ctrl+L","Ctrl+R","Ctrl+E","Ctrl+J"],ans:2},
+  {q:"The shortcut to Left Align text is:",opts:["Ctrl+E","Ctrl+L","Ctrl+R","Ctrl+J"],ans:1},
+  {q:"The shortcut to Right Align text is:",opts:["Ctrl+L","Ctrl+E","Ctrl+R","Ctrl+J"],ans:2},
+  {q:"The shortcut to Justify text is:",opts:["Ctrl+L","Ctrl+E","Ctrl+R","Ctrl+J"],ans:3},
+  {q:"The shortcut for Double Line Spacing is:",opts:["Ctrl+1","Ctrl+5","Ctrl+2","Ctrl+3"],ans:2},
+  {q:"The shortcut for Single Line Spacing is:",opts:["Ctrl+2","Ctrl+1","Ctrl+5","Ctrl+3"],ans:1},
+  {q:"The shortcut for 1.5 Line Spacing is:",opts:["Ctrl+1","Ctrl+2","Ctrl+5","Ctrl+3"],ans:2},
+  // EDITING & SHORTCUTS
+  {q:"The shortcut to Select All content is:",opts:["Ctrl+S","Ctrl+A","Ctrl+C","Ctrl+X"],ans:1},
+  {q:"The shortcut to Copy selected text is:",opts:["Ctrl+X","Ctrl+V","Ctrl+C","Ctrl+Z"],ans:2},
+  {q:"The shortcut to Cut selected text is:",opts:["Ctrl+C","Ctrl+X","Ctrl+V","Ctrl+Z"],ans:1},
+  {q:"The shortcut to Paste is:",opts:["Ctrl+C","Ctrl+X","Ctrl+Z","Ctrl+V"],ans:3},
+  {q:"The shortcut to Undo the last action is:",opts:["Ctrl+Y","Ctrl+Z","Ctrl+X","Ctrl+U"],ans:1},
+  {q:"The shortcut to Redo is:",opts:["Ctrl+Z","Ctrl+R","Ctrl+Y","Ctrl+F"],ans:2},
+  {q:"The shortcut to Find text is:",opts:["Ctrl+H","Ctrl+G","Ctrl+F","Ctrl+D"],ans:2},
+  {q:"The shortcut to Find and Replace is:",opts:["Ctrl+F","Ctrl+G","Ctrl+H","Ctrl+R"],ans:2},
+  {q:"The shortcut to Save is:",opts:["Ctrl+O","Ctrl+N","Ctrl+P","Ctrl+S"],ans:3},
+  {q:"The shortcut to Open a file is:",opts:["Ctrl+N","Ctrl+O","Ctrl+S","Ctrl+P"],ans:1},
+  {q:"The shortcut to create a New document is:",opts:["Ctrl+O","Ctrl+S","Ctrl+N","Ctrl+W"],ans:2},
+  {q:"The shortcut to Print is:",opts:["Ctrl+S","Ctrl+P","Ctrl+F2","Ctrl+N"],ans:1},
+  {q:"The shortcut for Print Preview is:",opts:["Ctrl+P","Ctrl+F2","Ctrl+F10","Ctrl+F9"],ans:1},
+  {q:"The End key moves the cursor to:",opts:["Beginning of document","End of document","End of the current line","Next paragraph"],ans:2},
+  {q:"Ctrl+End moves the cursor to:",opts:["End of current line","Beginning of document","End of the document","Next page"],ans:2},
+  {q:"Ctrl+Home moves the cursor to:",opts:["Beginning of current line","Beginning of the document","End of the document","Top of the page"],ans:1},
+  {q:"The shortcut to run Spell Check is:",opts:["F5","F3","F7","F9"],ans:2},
+  {q:"The shortcut for Thesaurus is:",opts:["Ctrl+F7","Shift+F7","Alt+F7","Ctrl+Shift+F7"],ans:1},
+  {q:"The shortcut to Close the current window is:",opts:["Ctrl+Q","Ctrl+W","Ctrl+X","Alt+F4"],ans:1},
+  {q:"The shortcut to apply Bullet list is:",opts:["Ctrl+Shift+B","Ctrl+Shift+L","Ctrl+B","Ctrl+L"],ans:1},
+  {q:"Word Count shortcut is:",opts:["Ctrl+G","Ctrl+Shift+G","Ctrl+W","Ctrl+Shift+W"],ans:1},
+  // PAGE SETUP, TABLES, INSERT
+  {q:"To add Page Numbers you go to:",opts:["Format → Page Numbers","Insert → Page Numbers","View → Page Numbers","Tools → Page Numbers"],ans:1},
+  {q:"To select Paper Size, you go to:",opts:["Insert → Paper","Format → Page","File → Page Setup → Paper","View → Paper Size"],ans:2},
+  {q:"Portrait and Landscape are types of:",opts:["Font styles","Page borders","Paper orientation","Line spacing"],ans:2},
+  {q:"The Gutter margin is used for:",opts:["Setting top margin","Adding space on the binding side","Reducing bottom margin","Creating columns"],ans:1},
+  {q:"To create a Table in MS Word, you click:",opts:["Table → Insert → Table","Format → Table → New","Tools → Create Table","File → Table → Insert"],ans:0},
+  {q:"To Merge cells in a table:",opts:["Click Table → Split Cells","Highlight cells → Table → Merge Cells","Click Format → Merge","Right-click → Insert Cells"],ans:1},
+  {q:"To Split a cell in a table:",opts:["Click Table → Merge Cells","Highlight cell → Table → Split Cells","Click Format → Split","Right-click → Merge Cells"],ans:1},
+  {q:"Drop Cap is used to:",opts:["Insert a watermark","Highlight the beginning of a new section in a document","Add a border","Number pages"],ans:1},
+  {q:"To insert Clip Art, you go to:",opts:["Format → Picture → Clip Art","Insert → Picture → Clip Art","Tools → Clip Art","View → Insert → Clip Art"],ans:1},
+  {q:"Borders and Shading is found under:",opts:["Insert","Tools","View","Format"],ans:3},
+  {q:"When printing, 'Current Page' will:",opts:["Print all pages","Print only the page currently on screen","Print a selected range","Print the first page only"],ans:1},
+  {q:"Spelling mistakes in MS Word are underlined in:",opts:["Blue","Green","Yellow","Red"],ans:3},
+  {q:"Grammatical mistakes are underlined in:",opts:["Red","Yellow","Green and blue lines","Purple"],ans:2},
+  {q:"To check Spelling and Grammar using the menu:",opts:["Format → Spelling","Insert → Spelling","Tools → Spelling and Grammar","View → Spelling"],ans:2},
+  {q:"In Spell Check, 'Ignore All' means:",opts:["Delete all occurrences","Correct all occurrences","Will not change any further occurrences","Add to dictionary"],ans:2},
+  {q:"In Spell Check, 'Add' means:",opts:["Delete the word","Ignore the word","Add the word to the dictionary","Change the word"],ans:2},
+  {q:"To insert Symbols, you go to:",opts:["Format → Symbols","Insert → Symbol","Tools → Insert Symbol","View → Symbol"],ans:1},
+  {q:"To insert WordArt, you go to:",opts:["Format → WordArt","Tools → WordArt","Insert → Picture → WordArt","View → WordArt"],ans:2},
+  {q:"The Watermark feature is found under which menu?",opts:["Insert","Format","View","Tools"],ans:1},
+  {q:"Indentation settings are found under:",opts:["Insert → Paragraph","Format → Paragraph","Tools → Paragraph","View → Paragraph"],ans:1},
+  {q:"To print ALL pages of a document, you select:",opts:["Current page","Pages","All","Selection"],ans:2},
+  {q:"Drawing objects in MS Word can only be done in which view?",opts:["Normal view","Web layout","Print Layout view","Outline view"],ans:2},
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildSession(){
+  const picked=shuffle(BANK).slice(0,TOTAL_Q);
+  return picked.map(q=>{
+    const correctText=q.opts[q.ans];
+    const shuffledOpts=shuffle([...q.opts]);
+    return{q:q.q,opts:shuffledOpts,ans:shuffledOpts.indexOf(correctText)};
+  });
+}
+
+function startQuiz(){
+  playerName=nameInput.value.trim();
+  if(playerName.length<2)return;
+  if(playerName==='1994'){isGhost=true;playerName='Ghost';}
+  sessionQ=buildSession();
+  userAnswers=new Array(TOTAL_Q).fill(null);
+  current=0;
+  document.getElementById('nameScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('playerLabel').textContent=isGhost?'👻 Playing anonymously':`Playing as ${playerName}`;
+  render();
+}
+
+function render(){
+  const q=sessionQ[current];
+  document.getElementById('qNumber').textContent=`QUESTION ${String(current+1).padStart(2,'0')}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('progressText').textContent=`Question ${current+1} of ${TOTAL_Q}`;
+  document.getElementById('progressFill').style.width=`${((current+1)/TOTAL_Q)*100}%`;
+  const answered=userAnswers.filter(a=>a!==null).length;
+  document.getElementById('answeredCount').textContent=answered;
+  const score=userAnswers.reduce((s,a,i)=>s+(a===sessionQ[i].ans?1:0),0);
+  document.getElementById('liveScore').textContent=`Score: ${score}`;
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===TOTAL_Q-1?'Last →':'Next →';
+  const container=document.getElementById('optionsContainer');
+  container.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick=()=>selectAnswer(i);
+    if(userAnswers[current]!==null){
+      btn.disabled=true;
+      if(i===q.ans)btn.classList.add('correct');
+      else if(i===userAnswers[current])btn.classList.add('wrong');
+    }
+    container.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';
+  if(userAnswers[current]!==null){
+    const correct=userAnswers[current]===q.ans;
+    fb.textContent=correct?`✓ Correct! "${q.opts[q.ans]}" is the right answer.`:`✗ Wrong. The correct answer is: "${q.opts[q.ans]}"`;
+    fb.className=`feedback show ${correct?'correct-fb':'wrong-fb'}`;
+  }
+  const card=document.getElementById('questionCard');
+  card.style.animation='none';card.offsetHeight;card.style.animation='fadeSlide 0.3s ease';
+}
+
+function selectAnswer(i){if(userAnswers[current]!==null)return;userAnswers[current]=i;render();}
+function navigate(dir){current=Math.max(0,Math.min(TOTAL_Q-1,current+dir));render();}
+
+async function submitQuiz(){
+  const score=userAnswers.reduce((s,a,i)=>s+(a===sessionQ[i].ans?1:0),0);
+  const wrong=userAnswers.filter((a,i)=>a!==null&&a!==sessionQ[i].ans).length;
+  const skipped=userAnswers.filter(a=>a===null).length;
+  const pct=Math.round((score/TOTAL_Q)*100);
+  document.getElementById('rScore').textContent=score;
+  document.getElementById('rCorrect').textContent=score;
+  document.getElementById('rWrong').textContent=wrong;
+  document.getElementById('rSkipped').textContent=skipped;
+  document.getElementById('rPercent').textContent=pct+'%';
+  let grade,msg;
+  if(pct>=90){grade="Outstanding! 🏆";msg="Excellent mastery of Word 2007!";}
+  else if(pct>=75){grade="Great Work! ✨";msg="Strong understanding — review a few weak spots.";}
+  else if(pct>=60){grade="Good Effort! 👍";msg="Decent foundation — keep practising.";}
+  else if(pct>=40){grade="Keep Going! 💪";msg="Review your notes and try again.";}
+  else{grade="More Practice Needed";msg="Go over the study notes carefully and retry.";}
+  document.getElementById('rGrade').textContent=grade;
+  document.getElementById('rMsg').textContent=msg;
+  const savedMsg=document.getElementById('savedMsg');
+  if(isGhost){savedMsg.textContent='👻 Ghost Mode — score not saved';savedMsg.style.color='var(--accent2)';}
+  else{
+    try{
+      const existing=await window.storage.get(STORAGE_KEY,true).catch(()=>null);
+      const scores=existing?JSON.parse(existing.value):[];
+      scores.push({name:playerName,score,total:TOTAL_Q,pct,quiz:QUIZ_ID,date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'})});
+      await window.storage.set(STORAGE_KEY,JSON.stringify(scores),true);
+      savedMsg.textContent=`✓ Score saved to leaderboard as "${playerName}"`;
+    }catch(e){savedMsg.textContent='Score could not be saved — but great effort!';savedMsg.style.color='var(--muted)';}
+  }
+  const rc=document.getElementById('reviewContainer');
+  rc.innerHTML='';
+  sessionQ.forEach((q,i)=>{
+    const ua=userAnswers[i],correct=ua===q.ans;
+    const div=document.createElement('div');
+    div.className=`review-item ${ua===null?'':correct?'r-correct':'r-wrong'}`;
+    let detail='';
+    if(ua===null)detail=`<div class="r-skip">⟳ Skipped — Answer: <b>${q.opts[q.ans]}</b></div>`;
+    else if(correct)detail=`<div class="r-ans">✓ ${q.opts[q.ans]}</div>`;
+    else detail=`<div class="r-your">✗ Your answer: ${q.opts[ua]}</div><div class="r-ans">✓ Correct: ${q.opts[q.ans]}</div>`;
+    div.innerHTML=`<div class="r-q">Q${i+1}. ${q.q}</div>${detail}`;
+    rc.appendChild(div);
+  });
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultsScreen').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartQuiz(){
+  sessionQ=buildSession();
+  userAnswers=new Array(TOTAL_Q).fill(null);
+  current=0;
+  document.getElementById('resultsScreen').classList.remove('show');
+  document.getElementById('quizScreen').style.display='block';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
