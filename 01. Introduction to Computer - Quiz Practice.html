@@ -198,7 +198,7 @@ const QUIZ_ID = 'computer-01';
 const STORAGE_KEY = 'leaderboard-scores';
 
 // Check ghost mode from session
-const isGhost = sessionStorage.getItem('ghostMode') === '1';
+let isGhost = sessionStorage.getItem('ghostMode') === '1';
 if (isGhost) {
   document.getElementById('ghostNotice').classList.add('show');
 }
@@ -220,10 +220,15 @@ let userAnswers = new Array(70).fill(null);
 function startQuiz() {
   playerName = nameInput.value.trim();
   if (playerName.length < 2) return;
+  // Secret code — 1994 triggers ghost mode silently
+  if (playerName === '1994') {
+    isGhost = true;
+    playerName = 'Ghost';
+  }
   document.getElementById('nameScreen').style.display = 'none';
   document.getElementById('quizScreen').style.display = 'block';
   document.getElementById('playerLabel').textContent = isGhost
-    ? `👻 Playing as Ghost`
+    ? `👻 Playing anonymously`
     : `Playing as ${playerName}`;
   render();
 }
