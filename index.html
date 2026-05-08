@@ -7,78 +7,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --card: #1a1a1a;
-    --border: #272727;
-    --text: #f0f0f0;
-    --muted: #666;
-    --muted2: #333;
-    --green:  #00e5a0;
-    --orange: #ff6b35;
-    --gold:   #f5c542;
+    --bg: #0d0d0d; --surface: #161616; --card: #1a1a1a; --border: #272727;
+    --text: #f0f0f0; --muted: #666; --muted2: #333;
+    --green: #00e5a0; --orange: #ff6b35; --gold: #f5c542; --wrong: #ff4444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; overflow-x: hidden; }
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 44px 44px;
-    opacity: 0.25;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 44px 44px; opacity: 0.25; pointer-events: none; z-index: 0;
   }
-
   .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
 
   /* HERO */
   .hero { padding: 60px 0 44px; animation: fadeUp 0.5s ease both; }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--green); border: 1px solid var(--green);
-    padding: 4px 14px; border-radius: 999px; margin-bottom: 22px;
-  }
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.2rem, 6vw, 3.8rem);
-    font-weight: 800; line-height: 1.05; letter-spacing: -2px;
-  }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--green); border: 1px solid var(--green); padding: 4px 14px; border-radius: 999px; margin-bottom: 22px; cursor: default; user-select: none; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; line-height: 1.05; letter-spacing: -2px; }
   .hero h1 em { color: var(--green); font-style: normal; }
   .hero p { margin-top: 14px; color: var(--muted); font-size: 0.82rem; line-height: 1.8; max-width: 520px; }
 
   /* STATS */
-  .stats {
-    display: flex; border: 1px solid var(--border);
-    border-radius: 14px; overflow: hidden;
-    margin: 0 0 52px; animation: fadeUp 0.5s 0.1s ease both;
-  }
+  .stats { display: flex; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin: 0 0 52px; animation: fadeUp 0.5s 0.1s ease both; }
   .stat { flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--border); }
   .stat:last-child { border-right: none; }
   .stat .val { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--green); }
   .stat .lbl { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; margin-top: 3px; }
 
-  /* SUBJECT BLOCK */
+  /* SECTION HEADER */
+  .section-label { font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SUBJECT */
   .subject { margin-bottom: 48px; animation: fadeUp 0.5s ease both; }
   .subject-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
-  .subject-icon {
-    width: 42px; height: 42px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; border: 1px solid var(--border);
-    background: var(--surface); flex-shrink: 0;
-  }
+  .subject-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
   .subject-info { flex: 1; }
   .subject-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
   .subject-sub { font-size: 0.68rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
@@ -87,25 +50,9 @@
 
   /* QUIZ CARDS */
   .quiz-list { display: flex; flex-direction: column; gap: 10px; }
-  .quiz-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 13px; padding: 18px 20px;
-    text-decoration: none; color: var(--text);
-    display: flex; align-items: center; gap: 16px;
-    transition: border-color 0.2s, transform 0.15s, background 0.2s;
-    position: relative; overflow: hidden;
-  }
-  .quiz-card:not(.coming-soon):hover {
-    border-color: var(--c);
-    transform: translateX(5px);
-    background: #1f1f1f;
-  }
-  .quiz-card::before {
-    content: ''; position: absolute;
-    left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--c); border-radius: 13px 0 0 13px;
-    opacity: 0; transition: opacity 0.2s;
-  }
+  .quiz-card { background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 18px 20px; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 16px; transition: border-color 0.2s, transform 0.15s, background 0.2s; position: relative; overflow: hidden; }
+  .quiz-card:not(.coming-soon):hover { border-color: var(--c); transform: translateX(5px); background: #1f1f1f; }
+  .quiz-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); border-radius: 13px 0 0 13px; opacity: 0; transition: opacity 0.2s; }
   .quiz-card:not(.coming-soon):hover::before { opacity: 1; }
   .quiz-num { font-size: 0.65rem; letter-spacing: 2px; color: var(--c); text-transform: uppercase; min-width: 28px; text-align: center; flex-shrink: 0; }
   .quiz-info { flex: 1; }
@@ -117,19 +64,49 @@
   .quiz-card:not(.coming-soon):hover .quiz-arrow { transform: translateX(4px); }
   .quiz-card.coming-soon { opacity: 0.35; border-style: dashed; pointer-events: none; }
 
+  /* ── LEADERBOARD ── */
+  .leaderboard { margin-bottom: 52px; animation: fadeUp 0.5s 0.3s ease both; }
+  .lb-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .lb-tab { font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px; }
+  .lb-tab.active { border-color: var(--green); color: var(--green); background: rgba(0,229,160,0.08); }
+  .lb-table { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .lb-header { display: grid; grid-template-columns: 48px 1fr 80px 80px 70px; padding: 12px 16px; background: var(--surface); font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .lb-row { display: grid; grid-template-columns: 48px 1fr 80px 80px 70px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: center; font-size: 0.8rem; transition: background 0.15s; }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: #1f1f1f; }
+  .lb-row.top1 { background: rgba(245,197,66,0.06); }
+  .lb-row.top2 { background: rgba(200,200,200,0.04); }
+  .lb-row.top3 { background: rgba(205,127,50,0.04); }
+  .lb-rank { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; }
+  .lb-rank.r1 { color: var(--gold); }
+  .lb-rank.r2 { color: #aaa; }
+  .lb-rank.r3 { color: #cd7f32; }
+  .lb-name { font-weight: 500; }
+  .lb-score { color: var(--green); font-family: 'Syne', sans-serif; font-weight: 700; }
+  .lb-pct { color: var(--muted); font-size: 0.75rem; }
+  .lb-date { color: var(--muted); font-size: 0.7rem; }
+  .lb-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 0.8rem; }
+  .lb-loading { padding: 30px; text-align: center; color: var(--muted); font-size: 0.75rem; }
+
   /* FOOTER */
   .footer { border-top: 1px solid var(--border); padding: 24px 0 0; text-align: center; font-size: 0.7rem; color: var(--muted2); line-height: 2; }
   .footer span { color: var(--muted); }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  /* HIDDEN GHOST INDICATOR */
+  .ghost-mode-hint { display: none; position: fixed; bottom: 20px; right: 20px; background: rgba(255,107,53,0.15); border: 1px solid var(--orange); color: var(--orange); font-size: 0.68rem; padding: 6px 14px; border-radius: 999px; letter-spacing: 1px; z-index: 999; }
+  .ghost-mode-hint.show { display: block; }
+
+  /* HIDDEN SPOT — invisible trigger in footer */
+  #ghostTrigger { position: fixed; bottom: 0; left: 0; width: 40px; height: 40px; cursor: default; z-index: 9999; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
   .subject:nth-child(1) { animation-delay: 0.15s; }
   .subject:nth-child(2) { animation-delay: 0.25s; }
   .subject:nth-child(3) { animation-delay: 0.35s; }
 
-  @media (max-width: 500px) {
+  @media (max-width: 580px) {
+    .lb-header, .lb-row { grid-template-columns: 40px 1fr 60px 55px; }
+    .lb-date { display: none; }
     .stats { flex-wrap: wrap; }
     .stat { min-width: 50%; border-bottom: 1px solid var(--border); }
     .subject-count { display: none; }
@@ -137,10 +114,15 @@
 </style>
 </head>
 <body>
+
+<!-- INVISIBLE GHOST TRIGGER — bottom-left corner -->
+<div id="ghostTrigger" title=""></div>
+<div class="ghost-mode-hint" id="ghostHint">👻 Ghost Mode ON</div>
+
 <div class="wrap">
 
   <div class="hero">
-    <div class="hero-tag">📚 Practice Hub</div>
+    <div class="hero-tag" id="heroTag">📚 Practice Hub</div>
     <h1>May 2026<br><em>Exam Practice</em></h1>
     <p>Three subjects. All your MCQs in one place. Pick a topic, test yourself, see your score — and keep going until exam day.</p>
   </div>
@@ -150,6 +132,21 @@
     <div class="stat"><div class="val">7</div><div class="lbl">Quiz Sets</div></div>
     <div class="stat"><div class="val">70+</div><div class="lbl">Questions</div></div>
     <div class="stat"><div class="val">∞</div><div class="lbl">Attempts</div></div>
+  </div>
+
+  <!-- ── LEADERBOARD ── -->
+  <div class="leaderboard">
+    <div class="section-label">🏆 Leaderboard</div>
+    <div class="lb-tabs" id="lbTabs">
+      <div class="lb-tab active" data-quiz="all" onclick="switchTab(this)">All Quizzes</div>
+      <div class="lb-tab" data-quiz="computer-01" onclick="switchTab(this)">Computer 01</div>
+    </div>
+    <div class="lb-table">
+      <div class="lb-header">
+        <div>#</div><div>Name</div><div>Score</div><div>Percent</div><div>Date</div>
+      </div>
+      <div id="lbBody"><div class="lb-loading">Loading scores...</div></div>
+    </div>
   </div>
 
   <!-- ── COMPUTER ── -->
@@ -164,7 +161,6 @@
     </div>
     <div class="divider"></div>
     <div class="quiz-list">
-
       <a class="quiz-card" href="01. Introduction to Computer - Quiz Practice.html" style="--c: var(--green)">
         <div class="quiz-num">01</div>
         <div class="quiz-info">
@@ -177,7 +173,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </a>
-
       <div class="quiz-card coming-soon" style="--c: var(--green)">
         <div class="quiz-num">02</div>
         <div class="quiz-info">
@@ -186,7 +181,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
     </div>
   </div>
 
@@ -202,7 +196,6 @@
     </div>
     <div class="divider"></div>
     <div class="quiz-list">
-
       <div class="quiz-card coming-soon" style="--c: var(--orange)">
         <div class="quiz-num">01</div>
         <div class="quiz-info">
@@ -211,7 +204,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
       <div class="quiz-card coming-soon" style="--c: var(--orange)">
         <div class="quiz-num">02</div>
         <div class="quiz-info">
@@ -220,7 +212,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
       <div class="quiz-card coming-soon" style="--c: var(--orange)">
         <div class="quiz-num">03</div>
         <div class="quiz-info">
@@ -229,7 +220,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
       <div class="quiz-card coming-soon" style="--c: var(--orange)">
         <div class="quiz-num">04</div>
         <div class="quiz-info">
@@ -238,7 +228,6 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
     </div>
   </div>
 
@@ -254,7 +243,6 @@
     </div>
     <div class="divider"></div>
     <div class="quiz-list">
-
       <div class="quiz-card coming-soon" style="--c: var(--gold)">
         <div class="quiz-num">—</div>
         <div class="quiz-info">
@@ -263,14 +251,109 @@
         </div>
         <div class="quiz-arrow">→</div>
       </div>
-
     </div>
   </div>
 
   <div class="footer">
     <span>May 2026 Exam Practice</span> · KiranMoghul · Open in any browser · No login needed
   </div>
-
 </div>
+
+<script>
+// ── GHOST MODE ──
+let ghostClicks = 0;
+let ghostMode = false;
+
+document.getElementById('ghostTrigger').addEventListener('click', () => {
+  ghostClicks++;
+  if (ghostClicks >= 3) {
+    ghostMode = !ghostMode;
+    ghostClicks = 0;
+    const hint = document.getElementById('ghostHint');
+    hint.classList.toggle('show', ghostMode);
+    // Store in sessionStorage so quiz page can read it
+    sessionStorage.setItem('ghostMode', ghostMode ? '1' : '0');
+    setTimeout(() => { if (ghostMode) hint.classList.remove('show'); }, 2500);
+  }
+});
+
+// ── LEADERBOARD ──
+const STORAGE_KEY = 'leaderboard-scores';
+let currentTab = 'all';
+
+async function loadScores() {
+  try {
+    const result = await window.storage.get(STORAGE_KEY, true);
+    return result ? JSON.parse(result.value) : [];
+  } catch {
+    return [];
+  }
+}
+
+function switchTab(el) {
+  document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = el.dataset.quiz;
+  renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+  const body = document.getElementById('lbBody');
+  body.innerHTML = '<div class="lb-loading">Loading...</div>';
+  const scores = await loadScores();
+
+  const filtered = currentTab === 'all'
+    ? scores
+    : scores.filter(s => s.quiz === currentTab);
+
+  const sorted = filtered
+    .slice()
+    .sort((a, b) => b.score - a.score || b.pct - a.pct)
+    .slice(0, 20);
+
+  if (sorted.length === 0) {
+    body.innerHTML = '<div class="lb-empty">No scores yet — be the first! 🎯</div>';
+    return;
+  }
+
+  const rankClass = (i) => i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
+  const rankLabel = (i) => {
+    const cls = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+    const sym = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
+    return `<span class="lb-rank ${cls}">${sym}</span>`;
+  };
+
+  body.innerHTML = sorted.map((s, i) => `
+    <div class="lb-row ${rankClass(i)}">
+      <div>${rankLabel(i)}</div>
+      <div class="lb-name">${s.name}</div>
+      <div class="lb-score">${s.score}/${s.total}</div>
+      <div class="lb-pct">${s.pct}%</div>
+      <div class="lb-date">${s.date}</div>
+    </div>
+  `).join('');
+}
+
+// Expose save function so quiz pages can call it
+window.saveScore = async function(name, score, total, quizId) {
+  if (sessionStorage.getItem('ghostMode') === '1') return; // ghost — skip saving
+  try {
+    const scores = await loadScores();
+    scores.push({
+      name,
+      score,
+      total,
+      pct: Math.round((score / total) * 100),
+      quiz: quizId,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+    });
+    await window.storage.set(STORAGE_KEY, JSON.stringify(scores), true);
+  } catch(e) {
+    console.error('Score save failed', e);
+  }
+};
+
+renderLeaderboard();
+</script>
 </body>
 </html>

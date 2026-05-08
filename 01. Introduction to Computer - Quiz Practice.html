@@ -3,239 +3,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Computer Fundamentals Quiz</title>
+<title>Introduction to Computer — Quiz Practice</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #1a1a1a;
-    --card: #222222;
-    --border: #333;
-    --accent: #00e5a0;
-    --accent2: #ff6b35;
-    --wrong: #ff4444;
-    --text: #f0f0f0;
-    --muted: #888;
-    --correct-bg: rgba(0,229,160,0.1);
-    --wrong-bg: rgba(255,68,68,0.1);
+    --bg: #0d0d0d; --surface: #1a1a1a; --card: #222;
+    --border: #333; --accent: #00e5a0; --accent2: #ff6b35;
+    --wrong: #ff4444; --text: #f0f0f0; --muted: #888;
+    --correct-bg: rgba(0,229,160,0.1); --wrong-bg: rgba(255,68,68,0.1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    padding: 20px;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; padding: 20px; }
   .container { max-width: 780px; margin: 0 auto; }
 
+  /* NAME SCREEN */
+  .name-screen {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 80vh; text-align: center;
+    animation: fadeSlide 0.4s ease;
+  }
+  .name-screen h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+  .name-screen h2 span { color: var(--accent); }
+  .name-screen p { color: var(--muted); font-size: 0.82rem; margin-bottom: 36px; line-height: 1.8; }
+  .name-input-wrap { width: 100%; max-width: 380px; }
+  .name-input {
+    width: 100%; background: var(--card); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; font-family: 'DM Mono', monospace;
+    font-size: 1rem; color: var(--text); outline: none;
+    transition: border-color 0.2s; text-align: center; margin-bottom: 14px;
+  }
+  .name-input:focus { border-color: var(--accent); }
+  .name-input::placeholder { color: var(--muted); }
+  .btn-start {
+    width: 100%; padding: 15px; background: var(--accent); color: #000;
+    border: none; border-radius: 12px; font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 800; cursor: pointer;
+    transition: transform 0.15s, opacity 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-start:hover { transform: translateY(-2px); }
+  .btn-start:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .ghost-notice { margin-top: 14px; font-size: 0.72rem; color: var(--accent2); display: none; }
+  .ghost-notice.show { display: block; }
+  .back-link { margin-top: 30px; font-size: 0.75rem; color: var(--muted); text-decoration: none; }
+  .back-link:hover { color: var(--text); }
+
   /* HEADER */
-  .header {
-    text-align: center;
-    padding: 40px 0 30px;
-  }
-  .header h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.1;
-  }
+  .header { text-align: center; padding: 40px 0 30px; }
+  .header h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
   .header h1 span { color: var(--accent); }
   .header p { color: var(--muted); margin-top: 10px; font-size: 0.85rem; }
 
   /* PROGRESS */
-  .progress-bar-wrap {
-    background: var(--border);
-    border-radius: 999px;
-    height: 6px;
-    margin: 20px 0 10px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 0.4s ease;
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
+  .progress-bar-wrap { background: var(--border); border-radius: 999px; height: 6px; margin: 20px 0 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 24px; }
 
   /* QUESTION CARD */
-  .question-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 16px;
-    animation: fadeSlide 0.3s ease;
-  }
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .q-number {
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .q-text {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    line-height: 1.5;
-    margin-bottom: 20px;
-  }
+  .question-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 16px; animation: fadeSlide 0.3s ease; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .q-number { font-size: 0.7rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .q-text { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; line-height: 1.5; margin-bottom: 20px; }
 
   /* OPTIONS */
   .options { display: flex; flex-direction: column; gap: 10px; }
-  .option {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 13px 16px;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.88rem;
-    color: var(--text);
-    text-align: left;
-    transition: border-color 0.2s, background 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .option:hover:not(:disabled) {
-    border-color: var(--accent);
-    transform: translateX(4px);
-  }
-  .option .opt-letter {
-    font-weight: 500;
-    color: var(--muted);
-    min-width: 18px;
-  }
-  .option.correct {
-    background: var(--correct-bg);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .option { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 16px; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 0.88rem; color: var(--text); text-align: left; transition: border-color 0.2s, background 0.2s, transform 0.1s; display: flex; align-items: center; gap: 12px; }
+  .option:hover:not(:disabled) { border-color: var(--accent); transform: translateX(4px); }
+  .option .opt-letter { font-weight: 500; color: var(--muted); min-width: 18px; }
+  .option.correct { background: var(--correct-bg); border-color: var(--accent); color: var(--accent); }
   .option.correct .opt-letter { color: var(--accent); }
-  .option.wrong {
-    background: var(--wrong-bg);
-    border-color: var(--wrong);
-    color: var(--wrong);
-  }
+  .option.wrong { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong); }
   .option.wrong .opt-letter { color: var(--wrong); }
   .option:disabled { cursor: default; }
 
   /* FEEDBACK */
-  .feedback {
-    margin-top: 14px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 0.82rem;
-    line-height: 1.5;
-    display: none;
-  }
+  .feedback { margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 0.82rem; line-height: 1.5; display: none; }
   .feedback.show { display: block; }
   .feedback.correct-fb { background: var(--correct-bg); border: 1px solid var(--accent); color: var(--accent); }
-  .feedback.wrong-fb   { background: var(--wrong-bg);   border: 1px solid var(--wrong);  color: #ff8888; }
+  .feedback.wrong-fb { background: var(--wrong-bg); border: 1px solid var(--wrong); color: #ff8888; }
 
   /* NAVIGATION */
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0 40px;
-    gap: 12px;
-  }
-  .btn {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    padding: 12px 28px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.15s, opacity 0.15s;
-    letter-spacing: 0.5px;
-  }
+  .nav { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 40px; gap: 12px; }
+  .btn { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; transition: transform 0.15s, opacity 0.15s; letter-spacing: 0.5px; }
   .btn:hover { transform: translateY(-2px); }
   .btn:disabled { opacity: 0.3; cursor: default; transform: none; }
   .btn-prev { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
   .btn-next { background: var(--accent); color: #000; }
   .btn-submit { background: var(--accent2); color: #fff; }
-  .score-chip {
-    font-size: 0.78rem;
-    color: var(--muted);
-    text-align: center;
-  }
+  .score-chip { font-size: 0.78rem; color: var(--muted); text-align: center; }
   .score-chip span { color: var(--accent); font-weight: bold; }
 
   /* RESULTS */
-  .results-screen {
-    display: none;
-    text-align: center;
-    padding: 60px 20px;
-    animation: fadeSlide 0.4s ease;
-  }
+  .results-screen { display: none; text-align: center; padding: 60px 20px; animation: fadeSlide 0.4s ease; }
   .results-screen.show { display: block; }
-  .result-score-ring {
-    width: 160px; height: 160px;
-    border-radius: 50%;
-    border: 6px solid var(--accent);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    margin: 0 auto 30px;
-  }
+  .result-score-ring { width: 160px; height: 160px; border-radius: 50%; border: 6px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 30px; }
   .result-score-ring .big { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; color: var(--accent); }
   .result-score-ring .small { font-size: 0.75rem; color: var(--muted); }
   .results-screen h2 { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 10px; }
-  .result-breakdown {
-    display: flex; justify-content: center; gap: 30px;
-    margin: 20px 0 30px; flex-wrap: wrap;
-  }
+  .result-breakdown { display: flex; justify-content: center; gap: 30px; margin: 20px 0 10px; flex-wrap: wrap; }
   .rb-item { text-align: center; }
   .rb-item .val { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; }
   .rb-item .lbl { font-size: 0.72rem; color: var(--muted); }
-  .btn-restart { margin-top: 10px; }
-  .grade-msg { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+  .grade-msg { color: var(--muted); font-size: 0.9rem; margin-bottom: 10px; }
+  .saved-msg { font-size: 0.75rem; color: var(--accent); margin-bottom: 24px; min-height: 20px; }
+  .results-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
 
   /* REVIEW */
   .review-section { margin-top: 40px; text-align: left; }
   .review-section h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; margin-bottom: 16px; text-align: center; color: var(--muted); letter-spacing: 1px; }
-  .review-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    font-size: 0.82rem;
-  }
+  .review-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; font-size: 0.82rem; }
   .review-item.r-correct { border-left: 3px solid var(--accent); }
-  .review-item.r-wrong   { border-left: 3px solid var(--wrong); }
+  .review-item.r-wrong { border-left: 3px solid var(--wrong); }
   .review-item .r-q { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 8px; font-size: 0.88rem; }
   .review-item .r-your { color: var(--wrong); }
-  .review-item .r-ans  { color: var(--accent); }
+  .review-item .r-ans { color: var(--accent); }
   .review-item .r-skip { color: var(--muted); font-style: italic; }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <div class="header">
-    <h1>Computer<br><span>Fundamentals</span> Quiz</h1>
-    <p>70 Questions · Based on your study notes</p>
+  <!-- NAME SCREEN -->
+  <div class="name-screen" id="nameScreen">
+    <h2>Computer<br><span>Fundamentals</span></h2>
+    <p>Introduction to Computer · 70 Questions<br>Enter your name to start. Your score will appear on the leaderboard.</p>
+    <div class="name-input-wrap">
+      <input type="text" class="name-input" id="nameInput" placeholder="Your name..." maxlength="30" />
+      <button class="btn-start" id="startBtn" onclick="startQuiz()" disabled>Start Quiz →</button>
+      <div class="ghost-notice" id="ghostNotice">👻 Ghost Mode — score won't be saved</div>
+    </div>
+    <a href="index.html" class="back-link">← Back to all quizzes</a>
   </div>
 
   <!-- QUIZ SCREEN -->
-  <div id="quizScreen">
+  <div id="quizScreen" style="display:none">
+    <div class="header">
+      <h1>Computer<br><span>Fundamentals</span></h1>
+      <p id="playerLabel" style="color:var(--accent); font-size:0.8rem;"></p>
+    </div>
+
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
     </div>
@@ -267,16 +172,19 @@
       <div class="big" id="rScore">0</div>
       <div class="small">out of 70</div>
     </div>
-    <h2 id="rGrade">Well done!</h2>
+    <h2 id="rGrade"></h2>
     <div class="grade-msg" id="rMsg"></div>
+    <div class="saved-msg" id="savedMsg"></div>
     <div class="result-breakdown">
       <div class="rb-item"><div class="val" id="rCorrect" style="color:var(--accent)">0</div><div class="lbl">Correct</div></div>
       <div class="rb-item"><div class="val" id="rWrong" style="color:var(--wrong)">0</div><div class="lbl">Wrong</div></div>
       <div class="rb-item"><div class="val" id="rSkipped" style="color:var(--muted)">0</div><div class="lbl">Skipped</div></div>
       <div class="rb-item"><div class="val" id="rPercent" style="color:var(--accent2)">0%</div><div class="lbl">Percentage</div></div>
     </div>
-    <button class="btn btn-next btn-restart" onclick="restartQuiz()">↺ Try Again</button>
-
+    <div class="results-btns">
+      <button class="btn btn-next" onclick="restartQuiz()">↺ Try Again</button>
+      <a href="index.html" class="btn btn-prev" style="text-decoration:none; display:inline-flex; align-items:center;">🏠 Home</a>
+    </div>
     <div class="review-section">
       <h3>— REVIEW ALL ANSWERS —</h3>
       <div id="reviewContainer"></div>
@@ -286,8 +194,41 @@
 </div>
 
 <script>
+const QUIZ_ID = 'computer-01';
+const STORAGE_KEY = 'leaderboard-scores';
+
+// Check ghost mode from session
+const isGhost = sessionStorage.getItem('ghostMode') === '1';
+if (isGhost) {
+  document.getElementById('ghostNotice').classList.add('show');
+}
+
+// Name input
+const nameInput = document.getElementById('nameInput');
+const startBtn = document.getElementById('startBtn');
+nameInput.addEventListener('input', () => {
+  startBtn.disabled = nameInput.value.trim().length < 2;
+});
+nameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && nameInput.value.trim().length >= 2) startQuiz();
+});
+
+let playerName = '';
+let current = 0;
+let userAnswers = new Array(70).fill(null);
+
+function startQuiz() {
+  playerName = nameInput.value.trim();
+  if (playerName.length < 2) return;
+  document.getElementById('nameScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  document.getElementById('playerLabel').textContent = isGhost
+    ? `👻 Playing as Ghost`
+    : `Playing as ${playerName}`;
+  render();
+}
+
 const questions = [
-  // --- HISTORY & GENERATIONS ---
   { q: "Who is known as the Father of the Computer?", opts: ["Alan Turing","Charles Babbage","Bill Gates","John von Neumann"], ans: 1 },
   { q: "What language do computers use at their most basic level?", opts: ["HTML","Assembly","Binary (0 and 1)","Python"], ans: 2 },
   { q: "Which generation of computers used vacuum tubes?", opts: ["2nd","3rd","1st","4th"], ans: 2 },
@@ -298,8 +239,6 @@ const questions = [
   { q: "The 5th generation of computers is focused on:", opts: ["Transistors","Vacuum tubes","Artificial Intelligence & machine learning","Integrated circuits"], ans: 2 },
   { q: "What is the fastest type of computer?", opts: ["Mainframe","Minicomputer","Supercomputer","Workstation"], ans: 2 },
   { q: "Which generation introduced AI, NLP, and neural networks?", opts: ["3rd","4th","1st","5th"], ans: 3 },
-
-  // --- HARDWARE BASICS ---
   { q: "What does CPU stand for?", opts: ["Central Processing Unit","Computer Power Unit","Core Processing Utility","Central Program Unit"], ans: 0 },
   { q: "CPU speed is measured in:", opts: ["Megabytes and Gigabytes","Megahertz and Gigahertz","Watts and Kilowatts","Pixels and Dots"], ans: 1 },
   { q: "Which component is called the 'brain' of the computer?", opts: ["RAM","Motherboard","CPU","Hard Disk"], ans: 2 },
@@ -315,21 +254,15 @@ const questions = [
   { q: "Blu-ray discs can store:", opts: ["700 MB","4.7 GB","1.44 MB","25–50 GB"], ans: 3 },
   { q: "What type of storage is a Hard Disk?", opts: ["Primary storage","Secondary storage","Cache storage","Virtual memory"], ans: 1 },
   { q: "What is the Motherboard?", opts: ["The screen display unit","The basic processing hardware to which all peripherals connect","The power supply unit","The graphics card"], ans: 1 },
-
-  // --- INPUT / OUTPUT ---
   { q: "Which of these is an INPUT device?", opts: ["Monitor","Speaker","Printer","Scanner"], ans: 3 },
   { q: "Which of these is an OUTPUT device?", opts: ["Keyboard","Mouse","Printer","Touchscreen"], ans: 2 },
   { q: "A mouse is used for:", opts: ["Typing text into the computer","Moving a pointer on the display","Printing documents","Scanning images"], ans: 1 },
   { q: "A standard QWERTY keyboard has how many keys?", opts: ["101","108","104","96"], ans: 2 },
   { q: "Function keys (F1, F2, etc.) are located:", opts: ["On the number pad","On the side of the keyboard","At the top of the keyboard","At the bottom of the keyboard"], ans: 2 },
   { q: "Which key is used to close a dialog box or cancel a command?", opts: ["Delete","Enter","Tab","ESC"], ans: 3 },
-
-  // --- NETWORK & COMMUNICATION ---
   { q: "What does Modem stand for?", opts: ["Memory Output Device","Modulator Demodulator","Monitor Output Device Management","Module Output Display"], ans: 1 },
   { q: "A Wide Area Network (WAN) covers:", opts: ["A single room","A building","A sizable geographical area","A single floor"], ans: 2 },
   { q: "Which type of computer handles large-scale data processing for banks and governments?", opts: ["Microcomputer","Supercomputer","Minicomputer","Mainframe"], ans: 3 },
-
-  // --- SOFTWARE ---
   { q: "Which type of software manages computer hardware and provides essential services?", opts: ["Application software","Utility software","System software","Firmware"], ans: 2 },
   { q: "Windows is an example of:", opts: ["Application software","Hardware","System software","Firmware"], ans: 2 },
   { q: "MS Word is an example of:", opts: ["System software","Firmware","Application software","Utility software"], ans: 2 },
@@ -339,8 +272,6 @@ const questions = [
   { q: "Which is NOT an item of computer hardware?", opts: ["Keyboard","Monitor","Icon","Mouse"], ans: 2 },
   { q: "Firmware is permanent software stored in:", opts: ["RAM","Hard disk","USB drive","ROM"], ans: 3 },
   { q: "Utility software is a sub-type of:", opts: ["Application software","System software","Firmware","Network software"], ans: 1 },
-
-  // --- MS WORD ---
   { q: "MS Word is used for:", opts: ["Spreadsheet calculations","Creating presentations","Documentation purposes","Database management"], ans: 2 },
   { q: "What is the default file extension for MS Word 2007 documents?", opts: [".doc",".txt",".docx",".wrd"], ans: 2 },
   { q: "The top bar in MS Word showing the document name is called:", opts: ["Menu bar","Ribbon","Title bar","Status bar"], ans: 2 },
@@ -358,8 +289,6 @@ const questions = [
   { q: "Format Painter is used to:", opts: ["Paint images on a document","Apply the same formatting from one text to another","Change the page color","Insert a watermark"], ans: 1 },
   { q: "The 'New Comment' option is found under which tab?", opts: ["Insert","Home","View","Review"], ans: 3 },
   { q: "Gutter Margin is added to:", opts: ["The top of the page","The bottom of the page","The binding side of the page","The right side of the page"], ans: 2 },
-
-  // --- KEYBOARD SHORTCUTS ---
   { q: "What does Ctrl + Z do?", opts: ["Redo last action","Save file","Undo the last action","Close the document"], ans: 2 },
   { q: "Which shortcut saves the current file?", opts: ["Ctrl+P","Ctrl+O","Ctrl+S","Ctrl+N"], ans: 2 },
   { q: "Shift + Delete does what to a file?", opts: ["Moves it to Recycle Bin","Renames the file","Permanently deletes it without Recycle Bin","Copies it to clipboard"], ans: 2 },
@@ -368,8 +297,6 @@ const questions = [
   { q: "Which shortcut opens Task Manager directly?", opts: ["Ctrl+Alt+Delete","Ctrl+Shift+Esc","Alt+F4","Windows+L"], ans: 1 },
   { q: "Windows key + L does what?", opts: ["Opens File Explorer","Shows the Desktop","Locks the computer screen","Opens Settings"], ans: 2 },
   { q: "Print Screen (PrtSc) is used to:", opts: ["Print the current page","Open Print dialog","Capture a screenshot of the entire screen","Save the current file"], ans: 2 },
-
-  // --- FILE MANAGEMENT & WINDOWS ---
   { q: "When you copy and paste a file:", opts: ["The original is deleted","A duplicate is created; original remains","The file is moved","The file is renamed"], ans: 1 },
   { q: "What is a folder also known as?", opts: ["File","Directory","Drive","Extension"], ans: 1 },
   { q: "Which Windows version first introduced USB support and Active Desktop?", opts: ["Windows XP","Windows 2000","Windows 98","Windows Vista"], ans: 2 },
@@ -382,27 +309,19 @@ const questions = [
   { q: "To safely remove a USB drive, you should use:", opts: ["Device Manager","Control Panel","Safely Remove Hardware icon in the system tray","File Explorer"], ans: 2 },
 ];
 
-let current = 0;
-let userAnswers = new Array(70).fill(null);
-
 function render() {
   const q = questions[current];
   document.getElementById('qNumber').textContent = `QUESTION ${String(current+1).padStart(2,'0')}`;
   document.getElementById('qText').textContent = q.q;
   document.getElementById('progressText').textContent = `Question ${current+1} of 70`;
   document.getElementById('progressFill').style.width = `${((current+1)/70)*100}%`;
-
-  // count answered
   const answered = userAnswers.filter(a => a !== null).length;
   document.getElementById('answeredCount').textContent = answered;
   const score = userAnswers.reduce((s,a,i) => s + (a === questions[i].ans ? 1 : 0), 0);
   document.getElementById('liveScore').textContent = `Score: ${score}`;
-
-  // nav buttons
   document.getElementById('prevBtn').disabled = current === 0;
   document.getElementById('nextBtn').textContent = current === 69 ? 'Last →' : 'Next →';
 
-  // options
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
   const letters = ['A','B','C','D'];
@@ -419,7 +338,6 @@ function render() {
     container.appendChild(btn);
   });
 
-  // feedback
   const fb = document.getElementById('feedback');
   fb.className = 'feedback';
   if (userAnswers[current] !== null) {
@@ -430,11 +348,8 @@ function render() {
     fb.className = `feedback show ${correct ? 'correct-fb' : 'wrong-fb'}`;
   }
 
-  // re-animate card
   const card = document.getElementById('questionCard');
-  card.style.animation = 'none';
-  card.offsetHeight;
-  card.style.animation = 'fadeSlide 0.3s ease';
+  card.style.animation = 'none'; card.offsetHeight; card.style.animation = 'fadeSlide 0.3s ease';
 }
 
 function selectAnswer(i) {
@@ -448,7 +363,7 @@ function navigate(dir) {
   render();
 }
 
-function submitQuiz() {
+async function submitQuiz() {
   const score = userAnswers.reduce((s,a,i) => s + (a === questions[i].ans ? 1 : 0), 0);
   const wrong = userAnswers.filter((a,i) => a !== null && a !== questions[i].ans).length;
   const skipped = userAnswers.filter(a => a === null).length;
@@ -463,14 +378,37 @@ function submitQuiz() {
   let grade, msg;
   if (pct >= 90) { grade = "Outstanding! 🏆"; msg = "Excellent mastery of computer fundamentals."; }
   else if (pct >= 75) { grade = "Great Work! ✨"; msg = "Strong understanding — review a few weak spots."; }
-  else if (pct >= 60) { grade = "Good Effort! 👍"; msg = "Decent foundation — keep practicing."; }
+  else if (pct >= 60) { grade = "Good Effort! 👍"; msg = "Decent foundation — keep practising."; }
   else if (pct >= 40) { grade = "Keep Going! 💪"; msg = "Review your notes and try again."; }
   else { grade = "More Practice Needed"; msg = "Go over the study notes carefully and retry."; }
 
   document.getElementById('rGrade').textContent = grade;
   document.getElementById('rMsg').textContent = msg;
 
-  // build review
+  // Save score
+  const savedMsg = document.getElementById('savedMsg');
+  if (isGhost) {
+    savedMsg.textContent = '👻 Ghost Mode — score not saved to leaderboard';
+    savedMsg.style.color = 'var(--accent2)';
+  } else {
+    try {
+      const existing = await window.storage.get(STORAGE_KEY, true).catch(() => null);
+      const scores = existing ? JSON.parse(existing.value) : [];
+      scores.push({
+        name: playerName,
+        score, total: 70, pct,
+        quiz: QUIZ_ID,
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+      });
+      await window.storage.set(STORAGE_KEY, JSON.stringify(scores), true);
+      savedMsg.textContent = `✓ Score saved to leaderboard as "${playerName}"`;
+    } catch(e) {
+      savedMsg.textContent = 'Score could not be saved — but great effort!';
+      savedMsg.style.color = 'var(--muted)';
+    }
+  }
+
+  // Build review
   const rc = document.getElementById('reviewContainer');
   rc.innerHTML = '';
   const letters = ['A','B','C','D'];
@@ -488,21 +426,18 @@ function submitQuiz() {
   });
 
   document.getElementById('quizScreen').style.display = 'none';
-  const rs = document.getElementById('resultsScreen');
-  rs.classList.add('show');
+  document.getElementById('resultsScreen').classList.add('show');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restartQuiz() {
   userAnswers = new Array(70).fill(null);
   current = 0;
-  document.getElementById('quizScreen').style.display = 'block';
   document.getElementById('resultsScreen').classList.remove('show');
+  document.getElementById('quizScreen').style.display = 'block';
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-render();
 </script>
 </body>
 </html>
