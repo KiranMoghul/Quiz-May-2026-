@@ -135,7 +135,7 @@
         </div>
         <div class="quiz-arrow">→</div>
       </a>
-      <a class="quiz-card" href="02-word-2007.html" style="--c:var(--green)">
+      <a class="quiz-card" href="02.%20Introduction%20to%20Word%202007%20-%20Quiz%20Practice.html" style="--c:var(--green)">
         <div class="quiz-num">02</div>
         <div class="quiz-info">
           <div class="quiz-title">Introduction to Word 2007</div>
@@ -210,7 +210,7 @@ heroTag.addEventListener('click',()=>{
 const STORAGE_KEY='leaderboard-scores';
 let currentTab='all';
 
-async function loadScores(){try{const r=await window.storage.get(STORAGE_KEY,true);return r?JSON.parse(r.value)[];}catch{return[];}}
+async function loadScores(){try{const r=await window.storage.get(STORAGE_KEY,true);return r?JSON.parse(r.value):[];}catch{return[];}}
 async function loadScoresSafe(){try{const r=await window.storage.get(STORAGE_KEY,true);return r?JSON.parse(r.value):[];}catch{return[];}}
 
 function switchTab(el){document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');currentTab=el.dataset.quiz;renderLeaderboard();}
