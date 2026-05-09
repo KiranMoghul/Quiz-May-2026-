@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxford Word Skills — Quiz Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0d0d;--surface:#1a1a1a;--card:#222;--border:#333;--accent:#ff6b35;--accent2:#00e5a0;--wrong:#ff4444;--text:#f0f0f0;--muted:#888;--correct-bg:rgba(255,107,53,0.12);--wrong-bg:rgba(255,68,68,0.1);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;padding:20px;}
+  .container{max-width:780px;margin:0 auto;}
+  .name-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;animation:fadeSlide 0.4s ease;}
+  .name-screen h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-1px;margin-bottom:10px;}
+  .name-screen h2 span{color:var(--accent);}
+  .name-screen p{color:var(--muted);font-size:0.82rem;margin-bottom:28px;line-height:1.8;}
+  .name-input-wrap{width:100%;max-width:380px;}
+  .name-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;font-family:'DM Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color 0.2s;text-align:center;margin-bottom:14px;}
+  .name-input:focus{border-color:var(--accent);}
+  .name-input::placeholder{color:var(--muted);}
+  .btn-start{width:100%;padding:15px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:transform 0.15s,opacity 0.2s;letter-spacing:0.5px;}
+  .btn-start:hover{transform:translateY(-2px);}
+  .btn-start:disabled{opacity:0.4;cursor:default;transform:none;}
+  .ghost-notice{margin-top:14px;font-size:0.72rem;color:#f5c542;display:none;}
+  .ghost-notice.show{display:block;}
+  .bank-info{margin-top:14px;font-size:0.7rem;color:var(--muted);line-height:1.9;}
+  .bank-info span{color:var(--accent);}
+  .back-link{margin-top:30px;font-size:0.75rem;color:var(--muted);text-decoration:none;}
+  .back-link:hover{color:var(--text);}
+  .header{text-align:center;padding:40px 0 30px;}
+  .header h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-1px;line-height:1.1;}
+  .header h1 span{color:var(--accent);}
+  .header p{color:var(--muted);margin-top:10px;font-size:0.85rem;}
+  .progress-bar-wrap{background:var(--border);border-radius:999px;height:6px;margin:20px 0 10px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:var(--accent);border-radius:999px;transition:width 0.4s ease;}
+  .progress-label{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:24px;}
+  .question-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px;animation:fadeSlide 0.3s ease;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .q-number{font-size:0.7rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .q-text{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;line-height:1.5;margin-bottom:20px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;cursor:pointer;font-family:'DM Mono',monospace;font-size:0.88rem;color:var(--text);text-align:left;transition:border-color 0.2s,background 0.2s,transform 0.1s;display:flex;align-items:center;gap:12px;}
+  .option:hover:not(:disabled){border-color:var(--accent);transform:translateX(4px);}
+  .option .opt-letter{font-weight:500;color:var(--muted);min-width:18px;}
+  .option.correct{background:var(--correct-bg);border-color:var(--accent);color:var(--accent);}
+  .option.correct .opt-letter{color:var(--accent);}
+  .option.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+  .option.wrong .opt-letter{color:var(--wrong);}
+  .option:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:0.82rem;line-height:1.5;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:var(--correct-bg);border:1px solid var(--accent);color:var(--accent);}
+  .feedback.wrong-fb{background:var(--wrong-bg);border:1px solid var(--wrong);color:#ff8888;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin:20px 0 40px;gap:12px;}
+  .btn{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;transition:transform 0.15s,opacity 0.15s;letter-spacing:0.5px;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn:disabled{opacity:0.3;cursor:default;transform:none;}
+  .btn-prev{background:var(--surface);color:var(--text);border:1.5px solid var(--border);}
+  .btn-next{background:var(--accent);color:#fff;}
+  .btn-submit{background:var(--accent2);color:#000;}
+  .score-chip{font-size:0.78rem;color:var(--muted);text-align:center;}
+  .score-chip span{color:var(--accent);font-weight:bold;}
+  .results-screen{display:none;text-align:center;padding:60px 20px;animation:fadeSlide 0.4s ease;}
+  .results-screen.show{display:block;}
+  .result-score-ring{width:160px;height:160px;border-radius:50%;border:6px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 30px;}
+  .result-score-ring .big{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:var(--accent);}
+  .result-score-ring .small{font-size:0.75rem;color:var(--muted);}
+  .results-screen h2{font-family:'Syne',sans-serif;font-size:1.8rem;margin-bottom:10px;}
+  .result-breakdown{display:flex;justify-content:center;gap:30px;margin:20px 0 10px;flex-wrap:wrap;}
+  .rb-item{text-align:center;}
+  .rb-item .val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;}
+  .rb-item .lbl{font-size:0.72rem;color:var(--muted);}
+  .grade-msg{color:var(--muted);font-size:0.9rem;margin-bottom:10px;}
+  .saved-msg{font-size:0.75rem;color:var(--accent);margin-bottom:16px;min-height:20px;}
+  .results-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
+  .review-section{margin-top:40px;text-align:left;}
+  .review-section h3{font-family:'Syne',sans-serif;font-size:1.1rem;margin-bottom:16px;text-align:center;color:var(--muted);letter-spacing:1px;}
+  .review-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;font-size:0.82rem;}
+  .review-item.r-correct{border-left:3px solid var(--accent);}
+  .review-item.r-wrong{border-left:3px solid var(--wrong);}
+  .review-item .r-q{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;font-size:0.88rem;}
+  .review-item .r-your{color:var(--wrong);}
+  .review-item .r-ans{color:var(--accent);}
+  .review-item .r-skip{color:var(--muted);font-style:italic;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="name-screen" id="nameScreen">
+    <h2>Oxford<br><span>Word Skills</span></h2>
+    <p>Time · Countries & Nationalities · Physical Actions<br>Enter your name to start.</p>
+    <div class="name-input-wrap">
+      <input type="text" class="name-input" id="nameInput" placeholder="Your name..." maxlength="30">
+      <button class="btn-start" id="startBtn" onclick="startQuiz()" disabled>Start Quiz →</button>
+      <div class="ghost-notice" id="ghostNotice">👻 Ghost Mode — score won't be saved</div>
+    </div>
+    <div class="bank-info">🎲 <span>50 questions</span> per session · Bank of <span>150</span> · Different every time</div>
+    <a href="index.html" class="back-link">← Back to all quizzes</a>
+  </div>
+
+  <div id="quizScreen" style="display:none">
+    <div class="header">
+      <h1>Oxford<br><span>Word Skills</span></h1>
+      <p id="playerLabel" style="color:var(--accent);font-size:0.8rem;"></p>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label"><span id="progressText">Question 1 of 50</span><span id="liveScore">Score: 0</span></div>
+    <div class="question-card" id="questionCard">
+      <div class="q-number" id="qNumber">QUESTION 01</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-prev" id="prevBtn" onclick="navigate(-1)" disabled>← Prev</button>
+      <div class="score-chip">Answered: <span id="answeredCount">0</span>/50</div>
+      <button class="btn btn-next" id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+    <div style="text-align:center;margin-bottom:40px;">
+      <button class="btn btn-submit" onclick="submitQuiz()">Submit & See Results</button>
+    </div>
+  </div>
+
+  <div class="results-screen" id="resultsScreen">
+    <div class="result-score-ring"><div class="big" id="rScore">0</div><div class="small">out of 50</div></div>
+    <h2 id="rGrade"></h2>
+    <div class="grade-msg" id="rMsg"></div>
+    <div class="saved-msg" id="savedMsg"></div>
+    <div class="result-breakdown">
+      <div class="rb-item"><div class="val" id="rCorrect" style="color:var(--accent)">0</div><div class="lbl">Correct</div></div>
+      <div class="rb-item"><div class="val" id="rWrong" style="color:var(--wrong)">0</div><div class="lbl">Wrong</div></div>
+      <div class="rb-item"><div class="val" id="rSkipped" style="color:var(--muted)">0</div><div class="lbl">Skipped</div></div>
+      <div class="rb-item"><div class="val" id="rPercent" style="color:var(--accent2)">0%</div><div class="lbl">Percentage</div></div>
+    </div>
+    <div class="results-btns">
+      <button class="btn btn-next" onclick="restartQuiz()">↺ Try Again</button>
+      <a href="index.html" class="btn btn-prev" style="text-decoration:none;display:inline-flex;align-items:center;">🏠 Home</a>
+    </div>
+    <div class="review-section"><h3>— REVIEW ALL ANSWERS —</h3><div id="reviewContainer"></div></div>
+  </div>
+</div>
+
+<script>
+const QUIZ_ID='english-02',STORAGE_KEY='leaderboard-scores',TOTAL_Q=50;
+let isGhost=sessionStorage.getItem('ghostMode')==='1';
+if(isGhost)document.getElementById('ghostNotice').classList.add('show');
+const nameInput=document.getElementById('nameInput'),startBtn=document.getElementById('startBtn');
+nameInput.addEventListener('input',()=>{startBtn.disabled=nameInput.value.trim().length<2;});
+nameInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&nameInput.value.trim().length>=2)startQuiz();});
+let playerName='',current=0,sessionQ=[],userAnswers=[];
+
+const BANK=[
+  // ── TELLING THE TIME ──
+  {q:"What is the correct way to say 3:00?",opts:["It's three past.","It's three o'clock.","It's o'clock three.","It's three hours."],ans:1},
+  {q:"What is the correct way to say 7:00?",opts:["It's seven past.","It's past seven.","It's seven o'clock.","It's at seven."],ans:2},
+  {q:"What is the correct way to say 11:00?",opts:["It's eleven hours.","It's eleven o'clock.","It's past eleven.","It's o'clock eleven."],ans:1},
+  {q:"What is the correct way to say 4:15?",opts:["It's fifteen past four.","It's four fifteen past.","It's quarter past four.","It's quarter to four."],ans:2},
+  {q:"What is the correct way to say 8:30?",opts:["It's thirty past eight.","It's half past eight.","It's eight and half.","It's half to nine."],ans:1},
+  {q:"What is the correct way to say 6:20?",opts:["It's twenty to six.","It's six twenty past.","It's twenty past six.","It's past six twenty."],ans:2},
+  {q:"What is the correct way to say 2:10?",opts:["It's ten to two.","It's ten past two.","It's two ten past.","It's past two ten."],ans:1},
+  {q:"What is the correct way to say 5:25?",opts:["It's twenty-five to five.","It's twenty-five past five.","It's five past twenty-five.","It's quarter past five."],ans:1},
+  {q:"What is the correct way to say 4:45?",opts:["It's quarter past four.","It's forty-five past four.","It's quarter to five.","It's quarter to four."],ans:2},
+  {q:"What is the correct way to say 6:40?",opts:["It's forty past six.","It's twenty past seven.","It's twenty to seven.","It's forty to seven."],ans:2},
+  {q:"What is the correct way to say 10:50?",opts:["It's fifty past ten.","It's ten to eleven.","It's ten past eleven.","It's fifty to ten."],ans:1},
+  {q:"What is the correct way to say 3:35?",opts:["It's thirty-five past three.","It's twenty-five past three.","It's twenty-five to four.","It's thirty-five to four."],ans:2},
+  {q:"What is the correct way to say 1:55?",opts:["It's five past one.","It's fifty-five past one.","It's five to two.","It's five to one."],ans:2},
+  {q:"When do you use the word 'minutes' when telling the time?",opts:["Always, for every number","Only when the number is 5, 10, 15, 20, or 25","When the number is NOT 5, 10, 15, 20, or 25","Only after the hour"],ans:2},
+  {q:"What is the correct way to say 6:57?",opts:["It's fifty-seven past six.","It's three minutes to seven.","It's three to seven.","It's seven minutes past six."],ans:1},
+  {q:"What is the correct way to say 1:03?",opts:["It's three past one.","It's three minutes past one.","It's three to one.","It's one and three."],ans:1},
+  {q:"What is the correct way to say 4:17?",opts:["It's seventeen past four.","It's seventeen to four.","It's seventeen minutes past four.","It's quarter past four."],ans:2},
+  {q:"What is the correct way to say 9:52?",opts:["It's eight minutes past ten.","It's eight to ten.","It's eight minutes to ten.","It's fifty-two past nine."],ans:2},
+  {q:"What is the correct way to say 2:07?",opts:["It's seven to two.","It's seven minutes past two.","It's seven past two.","It's two and seven."],ans:1},
+  {q:"In informal style, how do you say 4:15?",opts:["It's quarter past four.","It's four fifteen.","It's fifteen four.","It's four and fifteen."],ans:1},
+  {q:"In informal style, how do you say 6:40?",opts:["It's twenty to seven.","It's forty six.","It's six forty.","It's six and forty."],ans:2},
+  {q:"In informal style, how do you say 11:45?",opts:["It's quarter to twelve.","It's eleven forty-five.","It's forty-five eleven.","It's eleven and forty-five."],ans:1},
+  {q:"What does a.m. refer to?",opts:["Afternoon and evening","Morning","Midnight only","Night only"],ans:1},
+  {q:"What does p.m. refer to?",opts:["Morning","Midnight only","Afternoon, evening, or night","Morning and afternoon"],ans:2},
+  {q:"How do you say 9 a.m.?",opts:["It's nine o'clock at night.","It's nine o'clock in the morning.","It's nine o'clock in the afternoon.","It's nine o'clock in the evening."],ans:1},
+  {q:"What is the correct way to say 12:00 p.m.?",opts:["It's midnight.","It's noon at night.","It's midday.","It's twelve o'clock at night."],ans:2},
+  {q:"What is the correct way to say 12:00 a.m.?",opts:["It's midday.","It's midnight.","It's twelve in the morning.","It's noon."],ans:1},
+  {q:"How do you say 5 p.m.?",opts:["It's five o'clock in the morning.","It's five o'clock at night.","It's five o'clock in the afternoon.","It's five o'clock in the evening."],ans:2},
+  {q:"How do you say 11:30 p.m.?",opts:["It's eleven thirty in the morning.","It's eleven thirty in the afternoon.","It's eleven thirty at night.","It's eleven thirty at noon."],ans:2},
+  {q:"What does 'past' mean when telling the time?",opts:["Minutes before the next hour","Minutes after the hour, up to 30","The exact hour","Minutes before midnight"],ans:1},
+  {q:"What does 'to' mean when telling the time?",opts:["Minutes after the hour","The exact hour","Minutes before the next hour","Half past the hour"],ans:2},
+  {q:"How many minutes is 'quarter past'?",opts:["30","45","20","15"],ans:3},
+  {q:"How many minutes is 'half past'?",opts:["15","45","30","20"],ans:2},
+  {q:"How many minutes is 'quarter to'?",opts:["15 minutes past","45 minutes past the hour","15 minutes before","30 minutes before"],ans:1},
+  {q:"What is the correct way to say 3:30 in informal style?",opts:["It's half past three.","It's three thirty.","It's thirty three.","It's three and thirty."],ans:1},
+
+  // ── COUNTRIES & NATIONALITIES ──
+  {q:"She's from France. She's ___.",opts:["Frenchian","Frenchish","French","Francian"],ans:2},
+  {q:"He's from Germany. He's ___.",opts:["Germanish","Germanian","Germanish","German"],ans:3},
+  {q:"She's from Japan. She's ___.",opts:["Japanian","Japanish","Japanese","Japanean"],ans:2},
+  {q:"He's from Brazil. He's ___.",opts:["Brazilish","Brazilian","Brazilean","Brazilan"],ans:1},
+  {q:"She's from Australia. She's ___.",opts:["Australish","Australean","Australan","Australian"],ans:3},
+  {q:"He's from Spain. He's ___.",opts:["Spanian","Spaniel","Spanish","Spanean"],ans:2},
+  {q:"She's from Russia. She's ___.",opts:["Russish","Russian","Russean","Russianese"],ans:1},
+  {q:"He's from India. He's ___.",opts:["Indish","Indic","Indian","Indianese"],ans:2},
+  {q:"She's from Turkey. She's ___.",opts:["Turkian","Turkese","Turkish","Turkic"],ans:2},
+  {q:"He's from the United States. He's ___.",opts:["United Statesian","American","Usian","Unitedian"],ans:1},
+  {q:"People from Greece speak ___.",opts:["Grecian","Greekish","Greek","Greeklish"],ans:2},
+  {q:"People from Poland speak ___.",opts:["Polander","Polandish","Polonese","Polish"],ans:3},
+  {q:"People from Hungary speak ___.",opts:["Hungarish","Hungarese","Hungarian","Hungaric"],ans:2},
+  {q:"People from China speak ___.",opts:["Chinish","Chinean","Chinese","Chinanese"],ans:2},
+  {q:"People from Saudi Arabia speak ___.",opts:["Saudi","Arabish","Arabican","Arabic"],ans:3},
+  {q:"People from Mexico speak ___.",opts:["Mexican","Mexicanish","Spanish","Mexish"],ans:2},
+  {q:"People from Brazil speak ___.",opts:["Brazilian","Spanish","Brazilish","Portuguese"],ans:3},
+  {q:"People from Canada speak ___.",opts:["Canadian only","French only","English or French","English only"],ans:2},
+  {q:"France is in ___.",opts:["Asia","North America","Africa","Europe"],ans:3},
+  {q:"China is in ___.",opts:["Europe","Africa","Asia / The Far East","South America"],ans:2},
+  {q:"Canada is in ___.",opts:["South America","Europe","Central America","North America"],ans:3},
+  {q:"Mexico is in ___.",opts:["North America","South America","Central America","Europe"],ans:2},
+  {q:"Argentina is in ___.",opts:["Central America","North America","Europe","South America"],ans:3},
+  {q:"Saudi Arabia is in ___.",opts:["Asia / The Far East","Africa","Europe","The Middle East"],ans:3},
+  {q:"Egypt is in ___.",opts:["The Middle East","Asia","Europe","Africa"],ans:3},
+  {q:"Australia is in ___.",opts:["Asia","Africa","Australasia","Europe"],ans:2},
+  {q:"Which nationality ending does 'Italian' use?",opts:["-ish","-an","-ian","-ese"],ans:2},
+  {q:"Which nationality ending does 'Spanish' use?",opts:["-ian","-ish","-an","-ese"],ans:1},
+  {q:"Which nationality ending does 'American' use?",opts:["-ian","-ish","-ese","-an"],ans:3},
+  {q:"Which nationality ending does 'Brazilian' use?",opts:["-an","-ish","-ian","-ese"],ans:2},
+  {q:"Which nationality ending does 'Turkish' use?",opts:["-ian","-ish","-an","-ese"],ans:1},
+  {q:"Which nationality ending does 'Mexican' use?",opts:["-ian","-ish","-ese","-an"],ans:3},
+  {q:"What is the correct plural for people from France?",opts:["Frenches","Frenchs","French","Frenchmen only"],ans:2},
+  {q:"What is the correct plural for people from China?",opts:["Chinas","Chineses","Chinamen","Chinese"],ans:3},
+  {q:"What is the correct plural for people from Japan?",opts:["Japaneses","Japans","Japanese","Japanians"],ans:2},
+  {q:"What is the correct plural for people from Spain?",opts:["Spanishes","Spaniards only","Spanish","Spanishs"],ans:2},
+  {q:"What is the correct plural for people from Switzerland?",opts:["Swisses","Switzerlanders","Swiss","Swissians"],ans:2},
+  {q:"What is the correct plural for people from the UK?",opts:["Britishes","Britains","British","Brittanics"],ans:2},
+  {q:"People from Switzerland speak ___.",opts:["Swiss only","English or French","German, French, or Italian","German only"],ans:2},
+  {q:"India is in ___.",opts:["Africa","Europe","The Middle East","Asia"],ans:3},
+  {q:"Thailand is in ___.",opts:["Africa","Europe","The Middle East","Asia / The Far East"],ans:3},
+
+  // ── PHYSICAL ACTIONS — PRESENT ──
+  {q:"Which sentence is correct for the verb 'sit down'?",opts:["She sit down at her desk every morning.","She sits down at her desk every morning.","She sitting down at her desk every morning.","She sitted down at her desk every morning."],ans:1},
+  {q:"Which sentence is correct for the verb 'stand up'?",opts:["The students stand up when the teacher walks in.","The students stands up when the teacher walk in.","The students standing up when the teacher walks in.","The students stood up when the teacher walks in."],ans:0},
+  {q:"Which sentence is correct for the verb 'ride'?",opts:["He ride his bike to school every day.","He riding his bike to school every day.","He rides his bike to school every day.","He rided his bike to school every day."],ans:2},
+  {q:"Which sentence is correct for the verb 'jump'?",opts:["The children jumps over the puddles.","The children jump over the puddles.","The children jumping over the puddles.","The children jumped over the puddles."],ans:1},
+  {q:"Which sentence is correct for the verb 'dance'?",opts:["She dance at the party every weekend.","She dances at the party every weekend.","She dancing at the party every weekend.","She danced at the party every weekend."],ans:1},
+  {q:"Which sentence is correct for the verb 'climb'?",opts:["He climbs the ladder to reach the top shelf.","He climb the ladder to reach the top shelf.","He climbing the ladder to reach the top shelf.","He climbed the ladder to reach the top shelf."],ans:0},
+  {q:"Which sentence is correct for the verb 'run'?",opts:["He run to the bus stop every morning.","He running to the bus stop every morning.","He runs to the bus stop every morning.","He runned to the bus stop every morning."],ans:2},
+  {q:"Which sentence is correct for the verb 'lie down'?",opts:["She lie down on the sofa after lunch.","She lied down on the sofa after lunch.","She lays down on the sofa after lunch.","She lies down on the sofa after lunch."],ans:3},
+  {q:"Which sentence is correct for the verb 'get on'?",opts:["She get on the bus at the corner.","She getting on the bus at the corner.","She gets on the bus at the corner.","She getted on the bus at the corner."],ans:2},
+  {q:"Which sentence is correct for the verb 'get off'?",opts:["He gets off the train at the last stop.","He get off the train at the last stop.","He getting off the train at the last stop.","He getted off the train at the last stop."],ans:0},
+  {q:"Which sentence is correct for the verb 'push'?",opts:["He push the car to get it started.","He pushing the car to get it started.","He pushes the car to get it started.","He pushed the car to get it started."],ans:2},
+  {q:"Which sentence is correct for the verb 'hold'?",opts:["She hold the baby carefully.","She holding the baby carefully.","She holds the baby carefully with both hands.","She holded the baby carefully."],ans:2},
+  {q:"Which sentence is correct for the verb 'pick up'?",opts:["He pick up his phone when it rings.","He picks up his phone when it rings.","He picking up his phone when it rings.","He picked up his phone when it rings."],ans:1},
+  {q:"Which sentence is correct for the verb 'turn on'?",opts:["She turn on the TV as soon as she gets home.","She turning on the TV as soon as she gets home.","She turned on the TV as soon as she gets home.","She turns on the TV as soon as she gets home."],ans:3},
+  {q:"Which sentence is correct for the verb 'drop'?",opts:["She drop her keys on the floor.","She dropping her keys on the floor.","She drops her keys on the floor by accident.","She dropped her keys on the floor."],ans:2},
+
+  // ── PHYSICAL ACTIONS — PAST SIMPLE ──
+  {q:"What is the past simple of 'sit down'?",opts:["Sitted down","Sit down","Sat down","Setted down"],ans:2},
+  {q:"What is the past simple of 'stand up'?",opts:["Standed up","Stood up","Stand up","Standup"],ans:1},
+  {q:"What is the past simple of 'ride'?",opts:["Rided","Ride","Ridden","Rode"],ans:3},
+  {q:"What is the past simple of 'fall over'?",opts:["Falled over","Fallen over","Fell over","Fall over"],ans:2},
+  {q:"What is the past simple of 'lie down'?",opts:["Lied down","Lain down","Layed down","Lay down"],ans:3},
+  {q:"What is the past simple of 'run'?",opts:["Runned","Ran","Run","Ranned"],ans:1},
+  {q:"What is the past simple of 'get on / get off'?",opts:["Getted","Get","Gotten","Got"],ans:3},
+  {q:"What is the past simple of 'hold'?",opts:["Holded","Held","Holden","Hold"],ans:1},
+  {q:"What is the past simple of 'give'?",opts:["Gived","Gave","Given","Gaven"],ans:1},
+  {q:"What is the past simple of 'break'?",opts:["Breaked","Broken","Broked","Broke"],ans:3},
+  {q:"What is the past simple of 'shut'?",opts:["Shutted","Shuted","Shut","Shotten"],ans:2},
+  {q:"What is the past simple of 'put down'?",opts:["Putted down","Put down","Puted down","Putdown"],ans:1},
+  {q:"Which of these verbs is IRREGULAR in the past simple?",opts:["Jump","Dance","Walk","Ride"],ans:3},
+  {q:"Which of these verbs is REGULAR in the past simple?",opts:["Hold","Give","Break","Jump"],ans:3},
+  {q:"Which sentence uses the past simple correctly?",opts:["She ride her bike to school this morning.","She rided her bike this morning.","She roden her bike this morning.","She rode her bike to school this morning."],ans:3},
+  {q:"Which sentence uses the past simple correctly?",opts:["He climbed Mount Kilimanjaro last year.","He clumb Mount Kilimanjaro last year.","He climb Mount Kilimanjaro last year.","He climbing Mount Kilimanjaro last year."],ans:0},
+  {q:"Which sentence uses the past simple correctly?",opts:["They dance all night at the wedding.","They danced all night at the wedding.","They dancing all night at the wedding.","They dances all night at the wedding."],ans:1},
+  {q:"Which sentence uses the past simple correctly?",opts:["She holded the baby for a long time.","She holden the baby for a long time.","She held the baby for a long time before putting her down.","She holdup the baby for a long time."],ans:2},
+  {q:"Which sentence uses the past simple correctly?",opts:["He gave five dictionaries to the students.","He gived five dictionaries to the students.","He give five dictionaries to the students.","He given five dictionaries to the students."],ans:0},
+  {q:"Which sentence uses the past simple correctly?",opts:["She shutted the window when it started to rain.","She shut the window when it started to rain.","She shuts the window when it started to rain.","She shotten the window when it started to rain."],ans:1},
+
+  // ── ONE HAND OR TWO HANDS ──
+  {q:"How many hands do you need to give someone five dictionaries?",opts:["One hand","Two hands","No hands","Three hands"],ans:1},
+  {q:"How many hands do you need to shut a dictionary?",opts:["Two hands","No hands","One hand","Three hands"],ans:2},
+  {q:"How many hands do you need to push a bicycle?",opts:["One hand","No hands","Three hands","Two hands"],ans:3},
+  {q:"How many hands do you need to turn on a TV?",opts:["Two hands","Three hands","One hand","No hands"],ans:2},
+  {q:"How many hands do you need to pick up a TV?",opts:["One hand","No hands","Two hands","Three hands"],ans:2},
+  {q:"How many hands do you need to break a ruler?",opts:["One hand","No hands","Three hands","Two hands"],ans:3},
+  {q:"How many hands do you need to close a door?",opts:["Two hands","No hands","Three hands","One hand"],ans:3},
+  {q:"How many hands do you need to pick up a baby?",opts:["One hand","No hands","Three hands","Two hands"],ans:3},
+  {q:"How many hands do you need to hold a baby?",opts:["One hand","No hands","Three hands","Two hands"],ans:3},
+  {q:"How many hands do you need to carry a door?",opts:["One hand","No hands","Three hands","Two hands"],ans:3},
+  {q:"How many hands do you need to break a bottle?",opts:["Two hands","No hands","Three hands","One hand"],ans:3},
+  {q:"How many hands do you need to turn off a radio?",opts:["Two hands","One hand","No hands","Three hands"],ans:1},
+  {q:"How many hands do you need to hold a radio?",opts:["Two hands","No hands","Three hands","One hand"],ans:3},
+  {q:"How many hands do you need to drop a ruler?",opts:["Two hands","No hands","Three hands","One hand"],ans:3},
+  {q:"How many hands do you need to touch your hair?",opts:["Two hands","No hands","Three hands","One hand"],ans:3},
+];
+
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildSession(){
+  const picked=shuffle(BANK).slice(0,TOTAL_Q);
+  return picked.map(q=>{
+    const correctText=q.opts[q.ans];
+    const shuffledOpts=shuffle(q.opts.slice());
+    return{q:q.q,opts:shuffledOpts,ans:shuffledOpts.indexOf(correctText)};
+  });
+}
+
+function startQuiz(){
+  playerName=nameInput.value.trim();
+  if(playerName.length<2)return;
+  if(playerName==='1994'){isGhost=true;playerName='Ghost';}
+  sessionQ=buildSession();
+  userAnswers=new Array(TOTAL_Q).fill(null);
+  current=0;
+  document.getElementById('nameScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('playerLabel').textContent=isGhost?'👻 Playing anonymously':'Playing as '+playerName;
+  render();
+}
+
+function render(){
+  const q=sessionQ[current];
+  document.getElementById('qNumber').textContent='QUESTION '+(current<9?'0':'')+(current+1);
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('progressText').textContent='Question '+(current+1)+' of '+TOTAL_Q;
+  document.getElementById('progressFill').style.width=((current+1)/TOTAL_Q*100)+'%';
+  document.getElementById('answeredCount').textContent=userAnswers.filter(a=>a!==null).length;
+  document.getElementById('liveScore').textContent='Score: '+userAnswers.reduce((s,a,i)=>s+(a!==null&&a===sessionQ[i].ans?1:0),0);
+  document.getElementById('prevBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===TOTAL_Q-1?'Last →':'Next →';
+  const container=document.getElementById('optionsContainer');
+  container.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.innerHTML='<span class="opt-letter">'+letters[i]+'</span>'+opt;
+    btn.onclick=()=>selectAnswer(i);
+    if(userAnswers[current]!==null){
+      btn.disabled=true;
+      if(i===q.ans)btn.classList.add('correct');
+      else if(i===userAnswers[current])btn.classList.add('wrong');
+    }
+    container.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';
+  if(userAnswers[current]!==null){
+    const correct=userAnswers[current]===q.ans;
+    fb.textContent=correct?'Correct! "'+q.opts[q.ans]+'" is the right answer.':'Wrong. The correct answer is: "'+q.opts[q.ans]+'"';
+    fb.className='feedback show '+(correct?'correct-fb':'wrong-fb');
+  }
+  const card=document.getElementById('questionCard');
+  card.style.animation='none';card.offsetHeight;card.style.animation='fadeSlide 0.3s ease';
+}
+
+function selectAnswer(i){if(userAnswers[current]!==null)return;userAnswers[current]=i;render();}
+function navigate(dir){current=Math.max(0,Math.min(TOTAL_Q-1,current+dir));render();}
+
+async function submitQuiz(){
+  const score=userAnswers.reduce((s,a,i)=>s+(a!==null&&a===sessionQ[i].ans?1:0),0);
+  const wrong=userAnswers.filter((a,i)=>a!==null&&a!==sessionQ[i].ans).length;
+  const skipped=userAnswers.filter(a=>a===null).length;
+  const pct=Math.round(score/TOTAL_Q*100);
+  document.getElementById('rScore').textContent=score;
+  document.getElementById('rCorrect').textContent=score;
+  document.getElementById('rWrong').textContent=wrong;
+  document.getElementById('rSkipped').textContent=skipped;
+  document.getElementById('rPercent').textContent=pct+'%';
+  let grade,msg;
+  if(pct>=90){grade='Outstanding! 🏆';msg='Excellent mastery of Oxford Word Skills!';}
+  else if(pct>=75){grade='Great Work! ✨';msg='Strong performance — review a few weak spots.';}
+  else if(pct>=60){grade='Good Effort! 👍';msg='Keep practising.';}
+  else if(pct>=40){grade='Keep Going! 💪';msg='Review your notes and try again.';}
+  else{grade='More Practice Needed';msg='Go over the study content carefully.';}
+  document.getElementById('rGrade').textContent=grade;
+  document.getElementById('rMsg').textContent=msg;
+  const savedMsg=document.getElementById('savedMsg');
+  if(isGhost){savedMsg.textContent='👻 Ghost Mode — score not saved';savedMsg.style.color='#f5c542';}
+  else{
+    try{
+      const existing=await window.storage.get(STORAGE_KEY,true).catch(()=>null);
+      const scores=existing?JSON.parse(existing.value):[];
+      scores.push({name:playerName,score,total:TOTAL_Q,pct,quiz:QUIZ_ID,date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'})});
+      await window.storage.set(STORAGE_KEY,JSON.stringify(scores),true);
+      savedMsg.textContent='Score saved as "'+playerName+'"';
+    }catch(e){savedMsg.textContent='Score could not be saved.';savedMsg.style.color='#888';}
+  }
+  const rc=document.getElementById('reviewContainer');
+  rc.innerHTML='';
+  sessionQ.forEach((q,i)=>{
+    const ua=userAnswers[i],correct=ua===q.ans;
+    const div=document.createElement('div');
+    div.className='review-item '+(ua===null?'':correct?'r-correct':'r-wrong');
+    let detail='';
+    if(ua===null)detail='<div class="r-skip">Skipped — Answer: <b>'+q.opts[q.ans]+'</b></div>';
+    else if(correct)detail='<div class="r-ans">✓ '+q.opts[q.ans]+'</div>';
+    else detail='<div class="r-your">✗ Your answer: '+q.opts[ua]+'</div><div class="r-ans">✓ Correct: '+q.opts[q.ans]+'</div>';
+    div.innerHTML='<div class="r-q">Q'+(i+1)+'. '+q.q+'</div>'+detail;
+    rc.appendChild(div);
+  });
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultsScreen').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartQuiz(){
+  sessionQ=buildSession();
+  userAnswers=new Array(TOTAL_Q).fill(null);
+  current=0;
+  document.getElementById('resultsScreen').classList.remove('show');
+  document.getElementById('quizScreen').style.display='block';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
