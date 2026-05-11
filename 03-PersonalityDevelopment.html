@@ -94,7 +94,8 @@
       <button class="btn-start" id="startBtn" onclick="startQuiz()" disabled>Start Quiz →</button>
       <div class="ghost-notice" id="ghostNotice">👻 Ghost Mode — score won't be saved</div>
     </div>
-    <div class="bank-info">🎲 <span>75 questions</span> per session · Bank of <span>200</span> · ⭐ Priority system · 3 sessions covers full bank</div>
+    <div class="bank-info">🎲 <span>75 questions</span> per session · Bank of <span>183</span> · New questions each session · Full bank in <span>3 sessions</span></div>
+    <div class="session-badge" id="sessionBadge" style="margin-top:10px;font-size:0.72rem;padding:5px 14px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);display:inline-block;">Session 1 of 3</div>
     <a href="index.html" class="back-link">← Back to all quizzes</a>
   </div>
 
@@ -141,7 +142,7 @@
 </div>
 
 <script>
-const QUIZ_ID='english-03',STORAGE_KEY='leaderboard-scores',TOTAL_Q=75;
+const QUIZ_ID='english-03',STORAGE_KEY='leaderboard-scores',TOTAL_Q=75,LS_KEY='eng03_seen';
 let isGhost=sessionStorage.getItem('ghostMode')==='1';
 if(isGhost)document.getElementById('ghostNotice').classList.add('show');
 const nameInput=document.getElementById('nameInput'),startBtn=document.getElementById('startBtn');
@@ -366,12 +367,28 @@ const BANK=[
 
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+function getSeenIds(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch{return[];}}
+function saveSeenIds(ids){try{localStorage.setItem(LS_KEY,JSON.stringify(ids));}catch{}}
+function getTotalSessions(){return Math.ceil(BANK.length/TOTAL_Q);}
+function getSessionNum(){return Math.min(getTotalSessions(),Math.floor(getSeenIds().length/TOTAL_Q)+1);}
+function updateSessionBadge(){
+  const el=document.getElementById('sessionBadge');
+  if(el)el.textContent='Session '+getSessionNum()+' of '+getTotalSessions();
+}
+
 function buildSession(){
-  const high=shuffle(BANK.filter(q=>q.p==='H'));
-  const med=shuffle(BANK.filter(q=>q.p==='M'));
-  const low=shuffle(BANK.filter(q=>q.p==='L'));
-  // 55 High + 17 Medium + 3 Low = 75
-  const picked=high.slice(0,55).concat(med.slice(0,17)).concat(low.slice(0,3));
+  const seen=getSeenIds();
+  // Prioritise unseen, within unseen keep High priority first
+  const unseenH=shuffle(BANK.filter((q,i)=>!seen.includes(i)&&q.p==='H'));
+  const unseenM=shuffle(BANK.filter((q,i)=>!seen.includes(i)&&q.p==='M'));
+  const unseenL=shuffle(BANK.filter((q,i)=>!seen.includes(i)&&q.p==='L'));
+  const seenAll=shuffle(BANK.filter((_,i)=>seen.includes(i)));
+  const combined=unseenH.concat(unseenM).concat(unseenL).concat(seenAll);
+  const picked=combined.slice(0,TOTAL_Q);
+  const pickedIdx=picked.map(q=>BANK.indexOf(q));
+  const newSeen=[...new Set([...seen,...pickedIdx])];
+  saveSeenIds(newSeen.length>=BANK.length?[]:newSeen);
+  updateSessionBadge();
   return shuffle(picked).map(q=>{
     const ct=q.opts[q.ans];
     const so=shuffle(q.opts.slice());
